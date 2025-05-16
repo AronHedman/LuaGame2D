@@ -1,0 +1,20 @@
+
+Smooth out movement
+-- Ease in - Ease out
+-- Player speed input buffer...
+
+4 directional sprite facing mouse 
+(if moving, otherwise facing walking direction)
+-- Timer on mouse movement
+-- State switch med antingen mouse pos eller walkd irection
+
+
+
+
+
+
+Rita held-sprites framför/bakom spelaren:
+
+kolla player.direktion 
+om facing höger - rita player sedan held item
+om facing vänster rita item sedan player
