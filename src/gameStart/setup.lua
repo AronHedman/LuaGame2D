@@ -2,6 +2,6 @@ function setupGame()
 
     --test
     love.keyboard.setKeyRepeat(true)
-    world:setSleepingAllowed(false)
+    world:setSleepingAllowed(false)    
 
 end

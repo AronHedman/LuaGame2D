@@ -1,11 +1,14 @@
-player = world:newBSGRectangleCollider(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 50, 50, 10)
+player = world:newBSGRectangleCollider(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 50, 75, 10)
 
-player.x = love.graphics.getWidth() / 2
-player.y = love.graphics.getHeight() / 2
+player.x = 200;
+player.y = 200;
+
 player.speed = 350
 player.dirX = 0
 player.dirY = 0
 player.facing = "down"
+player.animationSpeed = 0.2
+player.scale = 5
 player.linearDamping = 15
 
 player.dashCooldown = 0.75
@@ -16,50 +19,63 @@ player.gameState = 1
 player.gameStateTimer = 0
 
 --temp
-player.width = 50
-player.height = 50
+player.width = 12
+player.height = 18
 
 --temp
+
+player.spritesheet = love.graphics.newImage("assets/testPlayer.png")
+player.grid = anim8.newGrid(player.width, player.height, player.spritesheet:getWidth(), player.spritesheet:getHeight(), 0,
+    0)
+player.animations = {}
+player.animations.down = anim8.newAnimation(player.grid("1-4", 1), player.animationSpeed)
+player.animations.left = anim8.newAnimation(player.grid("1-4", 2), player.animationSpeed)
+player.animations.right = anim8.newAnimation(player.grid("1-4", 3), player.animationSpeed)
+player.animations.up = anim8.newAnimation(player.grid("1-4", 4), player.animationSpeed)
+player.animation = player.animations.down
+
 
 --player:setCollisionClass("Player")
 player:setFixedRotation(true)
 player:setLinearDamping(player.linearDamping)
 
 function player:update(dt)
-
     self:updateGameState(dt)
-    
+
     if self.gameState == 1 then
         self:playerMovement(dt)
-    
     end
 
     self.x = self:getX()
     self.y = self:getY()
 
+    self.animation:update(dt)
 end
 
-
 function player:draw() --draw function
-
+    player.animation:draw(player.spritesheet, self.x, self.y, nil, player.scale, player.scale, player.width / 2,
+        player.height / 2)
 end
 
 function player:playerMovement(dt)
-
-        if self.gameState == 1 then
-        if love.keyboard.isDown("w") then
-            self.dirY = -1
-            self.facing = "up"
-        elseif love.keyboard.isDown("s") then
-            self.dirY = 1
-            self.facing = "down"
-        end
+    if self.gameState == 1 then
         if love.keyboard.isDown("a") then
             self.dirX = -1
             self.facing = "left"
+            self.animation = self.animations.left
         elseif love.keyboard.isDown("d") then
             self.dirX = 1
             self.facing = "right"
+            self.animation = self.animations.right
+        end
+        if love.keyboard.isDown("w") then
+            self.dirY = -1
+            self.facing = "up"
+            self.animation = self.animations.up
+        elseif love.keyboard.isDown("s") then
+            self.dirY = 1
+            self.facing = "down"
+            self.animation = self.animations.down
         end
     end
 
@@ -67,6 +83,18 @@ function player:playerMovement(dt)
         local vec = vector(self.dirX, self.dirY):normalized() * self.speed
         self:setLinearVelocity(vec.x, vec.y)
     end
+
+    if (self:getX() + self.width / 2 < 0) then
+        self:setX(0)
+    elseif (self:getX() - self.width / 2 > love.graphics:getWidth()) then
+        self:setX(love.graphics:getWidth())
+    end
+    if (self:getY() + self.height / 2 < 0) then
+        self:setY(0)
+    elseif (self:getY() - self.height / 2 > love.graphics:getHeight()) then
+            self:setY(love.graphics:getHeight())
+    end
+
 
     self.dirX = 0
     self.dirY = 0
@@ -81,9 +109,9 @@ function player:dash()
         local angle = math.atan2(mouse_y - self.y, mouse_x - self.x)
 
         self:setDir(angle)
-        
+
         local vec = vector(self.dirX, self.dirY):normalized() * self.speed * 5
-        
+
         self:setSpeed(vec)
 
         self.dirX, self.dirY = 0, 0

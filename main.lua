@@ -20,6 +20,7 @@ end
 
 function love.draw()
 
-    world:draw() --Draws the colliders
     player:draw()
+    world:draw() --Draws the colliders
+
 end

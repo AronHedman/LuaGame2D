@@ -6,6 +6,11 @@ function loadRequires()
     world = wf.newWorld(0, 0, true)
 
     vector = require("libraries.hump-master.vector")
+
+    anim8 = require("libraries.anim8")
+    love.graphics.setDefaultFilter("nearest", "nearest")
+
+
     
     
     
