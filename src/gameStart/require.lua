@@ -1,30 +1,28 @@
 function loadRequires()
 
+    g = love.graphics
+    p = love.physics
+    k = love.keyboard
+
+    p.setMeter(64) --Set to one tile
+    world = p.newWorld(0, 0, true) --No gravity no sleeping
+
+    g.setDefaultFilter("nearest", "nearest")
+
+    -----------------------------------------------
+
     Object = require("libraries.classic")
-
-    wf = require("libraries.windfield")
-    world = wf.newWorld(0, 0, true)
-
+    
     vector = require("libraries.hump-master.vector")
 
     anim8 = require("libraries.anim8")
-    love.graphics.setDefaultFilter("nearest", "nearest")
-
-
-    
-    
     
     require("src.player")
-
-    require("src.gameStart.setup")   
 
     require("src.input")
     require("src.functions")
     require("src.update")
     require("src.draw")
 
-
---Don't start until all mudules are loaded....
-    setupGame()
 
 end

@@ -1,7 +1,6 @@
 
-Smooth out movement
--- Ease in - Ease out
--- Player speed input buffer...
+Convertera till love.physics
+
 
 4 directional sprite facing mouse 
 (if moving, otherwise facing walking direction)

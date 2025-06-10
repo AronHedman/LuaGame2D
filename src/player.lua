@@ -1,9 +1,11 @@
-player = world:newBSGRectangleCollider(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 50, 75, 10)
-
+player = {}
 player.x = 200;
 player.y = 200;
 
-player.speed = 350
+player.width = 12
+player.height = 18
+
+player.speed = 30
 player.dirX = 0
 player.dirY = 0
 player.facing = "down"
@@ -18,15 +20,18 @@ player.gameState = 1
 -- 0 = not accepting input
 player.gameStateTimer = 0
 
+player.body = love.physics.newBody(world, player.x, player.y, "dynamic") 
+player.body:setFixedRotation(true)
+
+player.shape = love.physics.newRectangleShape(player.width, player.height)
+player.fixture = love.physics.newFixture(player.body, player.shape, 1)
+
 --temp
-player.width = 12
-player.height = 18
 
 --temp
 
 player.spritesheet = love.graphics.newImage("assets/testPlayer.png")
-player.grid = anim8.newGrid(player.width, player.height, player.spritesheet:getWidth(), player.spritesheet:getHeight(), 0,
-    0)
+player.grid = anim8.newGrid(player.width, player.height, player.spritesheet:getWidth(), player.spritesheet:getHeight(), 0, 0)
 player.animations = {}
 player.animations.down = anim8.newAnimation(player.grid("1-4", 1), player.animationSpeed)
 player.animations.left = anim8.newAnimation(player.grid("1-4", 2), player.animationSpeed)
@@ -35,10 +40,6 @@ player.animations.up = anim8.newAnimation(player.grid("1-4", 4), player.animatio
 player.animation = player.animations.down
 
 
---player:setCollisionClass("Player")
-player:setFixedRotation(true)
-player:setLinearDamping(player.linearDamping)
-
 function player:update(dt)
     self:updateGameState(dt)
 
@@ -46,8 +47,8 @@ function player:update(dt)
         self:playerMovement(dt)
     end
 
-    self.x = self:getX()
-    self.y = self:getY()
+    self.x = self.body:getX()
+    self.y = self.body:getY()
 
     self.animation:update(dt)
 end
@@ -81,18 +82,18 @@ function player:playerMovement(dt)
 
     if self.dirX ~= 0 or self.dirY ~= 0 then
         local vec = vector(self.dirX, self.dirY):normalized() * self.speed
-        self:setLinearVelocity(vec.x, vec.y)
+        self.body:setLinearVelocity(vec.x, vec.y)
     end
 
-    if (self:getX() + self.width / 2 < 0) then
-        self:setX(0)
-    elseif (self:getX() - self.width / 2 > love.graphics:getWidth()) then
-        self:setX(love.graphics:getWidth())
+    if (self.body:getX() + self.width / 2 < 0) then
+        self.body:setX(0)
+    elseif (self.body:getX() - self.width / 2 > love.graphics:getWidth()) then
+        self.body:setX(love.graphics:getWidth())
     end
-    if (self:getY() + self.height / 2 < 0) then
-        self:setY(0)
-    elseif (self:getY() - self.height / 2 > love.graphics:getHeight()) then
-            self:setY(love.graphics:getHeight())
+    if (self.body:getY() + self.height / 2 < 0) then
+        self.body:setY(0)
+    elseif (self.body:getY() - self.height / 2 > love.graphics:getHeight()) then
+        self.body:setY(love.graphics:getHeight())
     end
 
 
@@ -104,7 +105,7 @@ function player:dash()
     if self.gameState == 1 then
         self.gameStateTimer = self.dashCooldown --cooldown
 
-        self:setLinearVelocity(0, 0)
+        self.body:setLinearVelocity(0, 0)
 
         local angle = math.atan2(mouse_y - self.y, mouse_x - self.x)
 
@@ -124,7 +125,7 @@ function player:setDir(direction)
 end
 
 function player:setSpeed(vec)
-    self:setLinearVelocity(vec.x, vec.y)
+    self.body:setLinearVelocity(vec.x, vec.y)
 end
 
 function player:updateGameState(dt)
