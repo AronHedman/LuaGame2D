@@ -11,7 +11,9 @@ Convertera till love.physics
 
 
 interactable map
+-tiles (farmland?)
 
+object generation (trees in forest map, quarry/mine, player base/map)
 
 
 tools/items
