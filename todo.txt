@@ -1,5 +1,6 @@
 
-Convertera till love.physics
+Convertera till love.physics 
+--
 
 
 4 directional sprite facing mouse 
@@ -9,11 +10,33 @@ Convertera till love.physics
 
 
 
+interactable map
 
+
+
+tools/items
+-axe
+
+-pickaxe
+
+-sword
+
+
+
+-wood
+
+-wheat
+
+-stone
+
+npc/mob/enemies
+
+
+-player inventory
 
 
 Rita held-sprites framför/bakom spelaren:
 
-kolla player.direktion 
+kolla player.direction 
 om facing höger - rita player sedan held item
 om facing vänster rita item sedan player

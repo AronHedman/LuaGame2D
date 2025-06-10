@@ -5,13 +5,13 @@ player.y = 200;
 player.width = 12
 player.height = 18
 
-player.speed = 30
+player.speed = 175
 player.dirX = 0
 player.dirY = 0
 player.facing = "down"
 player.animationSpeed = 0.2
 player.scale = 5
-player.linearDamping = 15
+player.linearDamping = 10
 
 player.dashCooldown = 0.75
 
@@ -22,9 +22,12 @@ player.gameStateTimer = 0
 
 player.body = love.physics.newBody(world, player.x, player.y, "dynamic") 
 player.body:setFixedRotation(true)
+player.body:setLinearDamping(player.linearDamping)
 
 player.shape = love.physics.newRectangleShape(player.width, player.height)
+
 player.fixture = love.physics.newFixture(player.body, player.shape, 1)
+
 
 --temp
 
@@ -46,6 +49,7 @@ function player:update(dt)
     if self.gameState == 1 then
         self:playerMovement(dt)
     end
+
 
     self.x = self.body:getX()
     self.y = self.body:getY()
