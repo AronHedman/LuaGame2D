@@ -7,6 +7,9 @@ function love.keypressed(key)
     if key == "lshift" then
         player:dash()
     end
+    if key == "tab" then
+        debugMode = not debugMode
+    end
 end
 
 --Mouse input

@@ -1,6 +1,9 @@
-
+--
 Convertera till love.physics 
 --
+
+
+create a better system for switching maps...
 
 
 4 directional sprite facing mouse 

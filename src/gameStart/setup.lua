@@ -1,4 +1,4 @@
-function loadRequires()
+function setup()
 
     g = love.graphics
     p = love.physics
@@ -11,17 +11,32 @@ function loadRequires()
 
     -----------------------------------------------
 
-    Object = require("libraries.classic")
+    Object = require("libraries.classic")  -- enables OOP (sort of)
     
     vector = require("libraries.hump-master.vector")
 
     anim8 = require("libraries.anim8")
+
+    -----------------------------------------------------
+
+    sti = require("libraries.sti")
+    
+    map1 = sti("assets/maps/testmapwithobjectsv2.lua") --Testmap
+
+    -----------------------------------------------------
+
+    camera = require("libraries.hump-master.camera")
+    cam = camera()
+
     
     require("src.player")
 
     require("src.input")
     require("src.functions")
     require("src.update")
+
+    require("src.debugger")
+
     require("src.draw")
 
 

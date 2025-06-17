@@ -91,13 +91,13 @@ function player:playerMovement(dt)
 
     if (self.body:getX() + self.width / 2 < 0) then
         self.body:setX(0)
-    elseif (self.body:getX() - self.width / 2 > love.graphics:getWidth()) then
-        self.body:setX(love.graphics:getWidth())
+    elseif (self.body:getX() - self.width / 2 > map1.width * map1.tilewidth) then
+        self.body:setX(map1.width * map1.tilewidth)
     end
     if (self.body:getY() + self.height / 2 < 0) then
         self.body:setY(0)
-    elseif (self.body:getY() - self.height / 2 > love.graphics:getHeight()) then
-        self.body:setY(love.graphics:getHeight())
+    elseif (self.body:getY() - self.height / 2 > map1.height * map1.tileheight) then
+        self.body:setY(map1.height * map1.tileheight)
     end
 
 
