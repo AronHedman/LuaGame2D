@@ -21,15 +21,16 @@ function setup()
 
     sti = require("libraries.sti")
     
-    map1 = sti("assets/maps/testmapwithobjectsv2.lua") --Testmap
+    map1 = sti("assets/maps/testMap.lua") --Testmap
 
     -----------------------------------------------------
 
     camera = require("libraries.hump-master.camera")
     cam = camera()
 
+
+    player = require("src.player")
     
-    require("src.player")
 
     require("src.input")
     require("src.functions")

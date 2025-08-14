@@ -1,49 +1,53 @@
-player = {}
-player.x = 200;
-player.y = 200;
-
-player.width = 12
-player.height = 18
-
-player.speed = 175
-player.dirX = 0
-player.dirY = 0
-player.facing = "down"
-player.animationSpeed = 0.2
-player.scale = 5
-player.linearDamping = 10
-
-player.dashCooldown = 0.75
-
-player.gameState = 1
--- 1 = accepting input
--- 0 = not accepting input
-player.gameStateTimer = 0
-
-player.body = love.physics.newBody(world, player.x, player.y, "dynamic") 
-player.body:setFixedRotation(true)
-player.body:setLinearDamping(player.linearDamping)
-
-player.shape = love.physics.newRectangleShape(player.width, player.height)
-
-player.fixture = love.physics.newFixture(player.body, player.shape, 1)
+Player = {}
 
 
---temp
+function Player:load()
+    self.x = 200;
+    self.y = 200;
 
---temp
+    self.width = 12
+    self.height = 18
 
-player.spritesheet = love.graphics.newImage("assets/testPlayer.png")
-player.grid = anim8.newGrid(player.width, player.height, player.spritesheet:getWidth(), player.spritesheet:getHeight(), 0, 0)
-player.animations = {}
-player.animations.down = anim8.newAnimation(player.grid("1-4", 1), player.animationSpeed)
-player.animations.left = anim8.newAnimation(player.grid("1-4", 2), player.animationSpeed)
-player.animations.right = anim8.newAnimation(player.grid("1-4", 3), player.animationSpeed)
-player.animations.up = anim8.newAnimation(player.grid("1-4", 4), player.animationSpeed)
-player.animation = player.animations.down
+    self.speed = 175
+    self.dirX = 0
+    self.dirY = 0
+    self.facing = "down"
+    self.animationSpeed = 0.2
+    self.scale = 5
+    self.linearDamping = 10
+
+    self.dashCooldown = 0.75
+
+    self.gameState = 1
+    -- 1 = accepting input
+    -- 0 = not accepting input
+    self.gameStateTimer = 0
+
+    self.body = love.physics.newBody(world, self.x, self.y, "dynamic") 
+    self.body:setFixedRotation(true)
+    self.body:setLinearDamping(self.linearDamping)
+
+    self.shape = love.physics.newRectangleShape(self.width, self.height)
+
+    self.fixture = love.physics.newFixture(self.body, self.shape, 1)
 
 
-function player:update(dt)
+    --temp
+
+    --temp
+
+    self.spritesheet = love.graphics.newImage("assets/testPlayer.png")
+    self.grid = anim8.newGrid(self.width, self.height, self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
+    self.animations = {}
+    self.animations.down = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed)
+    self.animations.left = anim8.newAnimation(self.grid("1-4", 2), self.animationSpeed)
+    self.animations.right = anim8.newAnimation(self.grid("1-4", 3), self.animationSpeed)
+    self.animations.up = anim8.newAnimation(self.grid("1-4", 4), self.animationSpeed)
+    self.animation = self.animations.down
+
+end
+
+function Player:update(dt)
     self:updateGameState(dt)
 
     if self.gameState == 1 then
@@ -57,12 +61,12 @@ function player:update(dt)
     self.animation:update(dt)
 end
 
-function player:draw() --draw function
-    player.animation:draw(player.spritesheet, self.x, self.y, nil, player.scale, player.scale, player.width / 2,
-        player.height / 2)
+function Player:draw() --draw function
+    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.width / 2,
+        self.height / 2)
 end
 
-function player:playerMovement(dt)
+function Player:playerMovement(dt)
     if self.gameState == 1 then
         if love.keyboard.isDown("a") then
             self.dirX = -1
@@ -105,7 +109,7 @@ function player:playerMovement(dt)
     self.dirY = 0
 end
 
-function player:dash()
+function Player:dash()
     if self.gameState == 1 then
         self.gameStateTimer = self.dashCooldown --cooldown
 
@@ -123,16 +127,16 @@ function player:dash()
     end
 end
 
-function player:setDir(direction)
+function Player:setDir(direction)
     self.dirX = math.cos(direction)
     self.dirY = math.sin(direction)
 end
 
-function player:setSpeed(vec)
+function Player:setSpeed(vec)
     self.body:setLinearVelocity(vec.x, vec.y)
 end
 
-function player:updateGameState(dt)
+function Player:updateGameState(dt)
     if self.gameStateTimer > 0 then
         self.gameState = 0
         self.gameStateTimer = self.gameStateTimer - dt
@@ -141,6 +145,8 @@ function player:updateGameState(dt)
     end
 end
 
-function player:increaseGameStateTimer(time)
+function Player:increaseGameStateTimer(time)
     self.gameStateTimer = self.gameStateTimer + time
 end
+
+return Player
