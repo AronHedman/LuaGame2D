@@ -2,6 +2,8 @@
 Convertera till love.physics 
 --
 
+Draw objects above/below player...
+
 
 create a better system for switching maps...
 
