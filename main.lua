@@ -12,16 +12,16 @@ function love.update(dt)
     Player:update(dt)
 
 
-    --drawing test
-    drawables = {};
+    -- drawing test
+    -- drawables = {};
 
-    for i, v in ipairs(map1.layers["onGround"]) do
-        table.insert(drawables, v)
-    end
+    -- for i, v in ipairs(map1.layers["onGround"]) do
+    --     table.insert(drawables, v)
+    -- end
 
-    table.insert(drawables, Player)
+    -- table.insert(drawables, Player)
 
-    table.sort(drawables, function(a, b) return a.y < b.y end)
+    -- table.sort(drawables, function(a, b) return a.y < b.y end)
 
     cam:lookAt(Player.x, Player.y) --Make the camera follow the Player
     --Prevents viewing outside of the map
@@ -30,26 +30,24 @@ end
 
 function love.draw()
     cam:attach() --Attach the camera to the screen
-    map1:drawLayer(map1.layers["ground"])
+    map1:drawLayer(map1.layers["Ground"])
 
     --Temp
-    map1:drawLayer(map1.layers["onGround"])
+    map1:drawLayer(map1.layers["Toplayer"])
+
+    Player:draw()
 
 
-    for i, v in ipairs(drawables) do
-        print(i, v.y, v.id)
-        v:draw()
-    end
-    --Player:draw()
 
-    --Temp
+--    local items = world:getBodies()
+--    for i = 1, #items do
+--        if items[i] ~= nil then
+--            local x, y, x2, y2 = items[i]:getWorldPoints()
+--            love.graphics.rectangle("line", x, y, x2 - x, y2 - y)
+--        end
+--    end
 
-
-    map1:drawLayer(map1.layers["aboveGround"])
-
---    world:draw() --Draws the colliders
-    cam:detach() --Detach the camera from the screen
-
+    cam:detach()     --Detach the camera from the screen
 
     drawDebug()
 end
