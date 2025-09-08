@@ -30,6 +30,8 @@ function setup()
 
 
     player = require("src.player")
+
+    require("src.objects.trees")
     
 
     require("src.input")

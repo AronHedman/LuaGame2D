@@ -33,11 +33,11 @@ function love.draw()
     map1:drawLayer(map1.layers["ground"])
 
     --Temp
-    map1:drawLayer(map1.layers["onGround"])
+    --map1:drawLayer(map1.layers["onGround"])
 
 
     for i, v in ipairs(drawables) do
-        print(i, v.y, v.id)
+        --print(i, v.y, v.id)
         v:draw()
     end
     --Player:draw()
