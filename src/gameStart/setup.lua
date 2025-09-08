@@ -20,8 +20,8 @@ function setup()
     -----------------------------------------------------
 
     sti = require("libraries.sti")
-    
-    map1 = sti("assets/maps/testMap.lua") --Testmap
+
+    map1 = sti("assets/maps/Testmap1.lua") --Testmap
 
     -----------------------------------------------------
 
