@@ -3,6 +3,8 @@ function love.load()
     require("src.gameStart.setup")
     setup()
     Player:load()
+
+    tempLoad()
 end
 
 function love.update(dt)
@@ -11,17 +13,20 @@ function love.update(dt)
     world:update(dt)
     Player:update(dt)
 
+    tempUpdate(dt)
+
 
     -- drawing test
-    -- drawables = {};
+    drawables = {};
 
-    -- for i, v in ipairs(map1.layers["onGround"]) do
-    --     table.insert(drawables, v)
-    -- end
+    table.insert(drawables, Player)
 
-    -- table.insert(drawables, Player)
+    for i, obj in ipairs(getTreeDrawables()) do
+        table.insert(drawables, obj)
+    end
 
-    -- table.sort(drawables, function(a, b) return a.y < b.y end)
+
+    table.sort(drawables, function(a, b) return a.y < b.y end)
 
     cam:lookAt(Player.x, Player.y) --Make the camera follow the Player
     --Prevents viewing outside of the map
@@ -33,30 +38,13 @@ function love.draw()
     map1:drawLayer(map1.layers["Ground"])
 
     --Temp
-<<<<<<< HEAD
-    --map1:drawLayer(map1.layers["onGround"])
+    tempDraw()
 
-
-    for i, v in ipairs(drawables) do
-        --print(i, v.y, v.id)
-        v:draw()
+    for i, obj in ipairs(drawables) do
+        obj:draw()
     end
-    --Player:draw()
-=======
+    
     map1:drawLayer(map1.layers["Toplayer"])
-
-    Player:draw()
-
-
->>>>>>> 22cf2f260266bd4e10fa6fd3f8837324c9d11df6
-
---    local items = world:getBodies()
---    for i = 1, #items do
---        if items[i] ~= nil then
---            local x, y, x2, y2 = items[i]:getWorldPoints()
---            love.graphics.rectangle("line", x, y, x2 - x, y2 - y)
---        end
---    end
 
     cam:detach()     --Detach the camera from the screen
 

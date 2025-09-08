@@ -42,5 +42,9 @@ function setup()
 
     require("src.draw")
 
+    require("src.temps.tempLoad")
+    require("src.temps.tempUpdate")
+    require("src.temps.tempDraw")
+
 
 end
