@@ -8,10 +8,12 @@ function love.load()
 end
 
 function love.update(dt)
-    fetchMousePos()
+    --fetchMousePos()
 
     world:update(dt)
     Player:update(dt)
+
+
 
     tempUpdate(dt)
 
@@ -37,23 +39,25 @@ function love.draw()
     cam:attach() --Attach the camera to the screen
     map1:drawLayer(map1.layers["Ground"])
 
-    --Temp
-    tempDraw()
-
     for i, obj in ipairs(drawables) do
         obj:draw()
     end
-    
+
     map1:drawLayer(map1.layers["Toplayer"])
 
-    cam:detach()     --Detach the camera from the screen
-
+    tempDraw()
+    
     drawDebug()
+    
+    
+    cam:detach() --Detach the camera from the screen
+
+    
 end
 
 function camBounds()
-    local w = love.graphics.getWidth()
-    local h = love.graphics.getHeight()
+    local w = g.getWidth()
+    local h = g.getHeight()
 
     if cam.x < w / 2 then
         cam.x = w / 2
