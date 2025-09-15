@@ -1,15 +1,16 @@
 function drawDebug()
     if not debugMode then return end
 
-    love.graphics.setColor(1, 0, 0, 1) -- Set color to red
+    g.setColor(1, 0, 0, 1) -- Set color to red
 
-    love.graphics.print("FPS: " .. love.timer.getFPS(), 10, 30)
+    g.print("FPS: " .. love.timer.getFPS(), 10, 30)
 
-    love.graphics.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
-    love.graphics.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
+    g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
+    g.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
         70)
 
-    love.graphics.setColor(1, 1, 1, 1) -- Reset color to white
+    g.setColor(1, 1, 1, 1) -- Reset color to white
+    g.setLineWidth(3)
 
     for _, body in ipairs(world:getBodies()) do
         for _, fixture in ipairs(body:getFixtures()) do
@@ -17,14 +18,14 @@ function drawDebug()
             local stype = shape:getType()
 
             if stype == "polygon" then
-                love.graphics.polygon("line", body:getWorldPoints(shape:getPoints()))
+                g.polygon("line", body:getWorldPoints(shape:getPoints()))
             elseif stype == "circle" then
                 local cx, cy = body:getWorldPoints(shape:getPoint())
                 local r = shape:getRadius()
-                love.graphics.circle("line", cx, cy, r)
+                g.circle("line", cx, cy, r)
             elseif stype == "edge" then
                 local x1, y1, x2, y2 = body:getWorldPoints(shape:getPoints())
-                love.graphics.line(x1, y1, x2, y2)
+                g.line(x1, y1, x2, y2)
             end
         end
     end

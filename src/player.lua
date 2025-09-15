@@ -4,8 +4,11 @@ function Player:load()
     self.x = 200;
     self.y = 200;
 
-    self.width = 12
-    self.height = 18
+    self.sWidth = 12
+    self.sHeight = 18
+
+    self.cWidth = 24
+    self.cHeight = 24
 
     self.speed = 175
     self.dirX = 0
@@ -20,13 +23,13 @@ function Player:load()
     self.body:setFixedRotation(true)
     self.body:setLinearDamping(self.linearDamping)
 
-    self.shape = love.physics.newRectangleShape(self.width, self.height)
+    self.shape = love.physics.newRectangleShape(self.cWidth, self.cHeight)
 
     self.fixture = love.physics.newFixture(self.body, self.shape, 1)
 
 
     self.spritesheet = love.graphics.newImage("assets/testPlayer.png")
-    self.grid = anim8.newGrid(self.width, self.height, self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
+    self.grid = anim8.newGrid(self.spritesheet:getWidth()/4, self.spritesheet:getHeight()/4, self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
     self.animations = {}
     self.animations.down = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed)
     self.animations.left = anim8.newAnimation(self.grid("1-4", 2), self.animationSpeed)
@@ -45,8 +48,8 @@ function Player:update(dt)
 end
 
 function Player:draw() --draw function
-    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.width / 2,
-        self.height * 0.82)
+    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.sWidth / 2,
+        self.sHeight * 0.82)
 end
 
 function Player:playerMovement()
@@ -74,14 +77,14 @@ function Player:playerMovement()
         self.body:setLinearVelocity(vec.x, vec.y)
     end
 
-    if (self.body:getX() + self.width / 2 < 0) then
+    if (self.body:getX() + self.sWidth / 2 < 0) then
         self.body:setX(0)
-    elseif (self.body:getX() - self.width / 2 > map1.width * map1.tilewidth) then
+    elseif (self.body:getX() - self.sWidth / 2 > map1.width * map1.tilewidth) then
         self.body:setX(map1.width * map1.tilewidth)
     end
-    if (self.body:getY() + self.height / 2 < 0) then
+    if (self.body:getY() + self.sHeight / 2 < 0) then
         self.body:setY(0)
-    elseif (self.body:getY() - self.height / 2 > map1.height * map1.tileheight) then
+    elseif (self.body:getY() - self.sHeight / 2 > map1.height * map1.tileheight) then
         self.body:setY(map1.height * map1.tileheight)
     end
 

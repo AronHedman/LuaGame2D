@@ -42,6 +42,9 @@ function setup()
 
     require("src.draw")
 
+    require("src.colliders.colliders")
+    createCollision()
+
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")

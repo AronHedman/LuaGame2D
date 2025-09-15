@@ -23,7 +23,7 @@ function love.update(dt)
 
     table.insert(drawables, Player)
 
-    for i, obj in ipairs(getTreeDrawables()) do
+    for i, obj in ipairs(getTrees()) do
         table.insert(drawables, obj)
     end
 
