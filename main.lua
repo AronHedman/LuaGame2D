@@ -47,11 +47,12 @@ function love.draw()
 
     tempDraw()
     
-    drawDebug()
+    drawDebugPre()
     
     
     cam:detach() --Detach the camera from the screen
 
+    drawDebugPost()
     
 end
 

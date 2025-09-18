@@ -1,13 +1,5 @@
-function drawDebug()
+function drawDebugPre()
     if not debugMode then return end
-
-    g.setColor(1, 0, 0, 1) -- Set color to red
-
-    g.print("FPS: " .. love.timer.getFPS(), 10, 30)
-
-    g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
-    g.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
-        70)
 
     g.setColor(1, 1, 1, 1) -- Reset color to white
     g.setLineWidth(3)
@@ -29,4 +21,18 @@ function drawDebug()
             end
         end
     end
+end
+
+function drawDebugPost()
+    if not debugMode then return end
+
+    g.setColor(1, 0, 0, 1) -- Set color to red
+
+    g.print("FPS: " .. love.timer.getFPS(), 10, 30)
+
+    g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
+    g.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
+        70)
+
+    g.setColor(1, 1, 1, 1) -- Reset color to white
 end

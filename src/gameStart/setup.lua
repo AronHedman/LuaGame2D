@@ -45,6 +45,13 @@ function setup()
     require("src.colliders.colliders")
     createCollision()
 
+    require("src.itemSystem.itemClass")
+    require("src.itemSystem.components.components")
+    require("src.itemSystem.items.tools")
+
+    require("src.temps.tempFunctions")
+    require("src.temps.tempFunctions")
+    require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")
