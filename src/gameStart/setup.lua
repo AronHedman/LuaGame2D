@@ -10,8 +10,6 @@ function setup()
     g.setDefaultFilter("nearest", "nearest")
 
     -----------------------------------------------
-
-    Object = require("libraries.classic")  -- enables OOP (sort of)
     
     vector = require("libraries.hump-master.vector")
 
@@ -28,15 +26,14 @@ function setup()
     camera = require("libraries.hump-master.camera")
     cam = camera()
 
-
-    player = require("src.player")
+    -------------------------------------------------------
+    require("src.player")
 
     require("src.objects.trees")
     
 
     require("src.input")
     require("src.functions")
-    require("src.update")
 
     require("src.debugger")
 
@@ -44,14 +41,12 @@ function setup()
     require("src.draw")
 
     require("src.colliders.colliders")
-    createCollision()
+    createCollision() --/////////////////
 
     require("src.itemSystem.itemClass")
     require("src.itemSystem.components.components")
     require("src.itemSystem.items.tools")
 
-    require("src.temps.tempFunctions")
-    require("src.temps.tempFunctions")
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")

@@ -53,23 +53,32 @@ function Player:draw() --draw function
 end
 
 function Player:playerMovement()
-    if love.keyboard.isDown("a") then
+
+    if love.keyboard.isDown("a") and (self.body:getX() + (self.sWidth / 2) > 0) then
         self.dirX = -1
         self.facing = "left"
         self.animation = self.animations.left
-    elseif love.keyboard.isDown("d") then
+    elseif love.keyboard.isDown("d") and self.body:getX() - self.sWidth / 2 < map1.width * map1.tilewidth then
         self.dirX = 1
         self.facing = "right"
         self.animation = self.animations.right
+    elseif (self.body:getX() + self.sWidth / 2 < 0) then
+        self.body:setX(0)
+    elseif (self.body:getX() - self.sWidth / 2 > map1.width * map1.tilewidth) then
+        self.body:setX(map1.width * map1.tilewidth)
     end
-    if love.keyboard.isDown("w") then
+    if love.keyboard.isDown("w") and (self.body:getY() + (self.sHeight / 2) > 0) then
         self.dirY = -1
         self.facing = "up"
         self.animation = self.animations.up
-    elseif love.keyboard.isDown("s") then
+    elseif love.keyboard.isDown("s") and (self.body:getY() - (self.sHeight / 2) < map1.height * map1.tileheight) then
         self.dirY = 1
         self.facing = "down"
         self.animation = self.animations.down
+    elseif (self.body:getY() + self.sHeight / 2 < 0) then
+        self.body:setY(0)
+    elseif (self.body:getY() - self.sHeight / 2 > map1.height * map1.tileheight) then
+        self.body:setY(map1.height * map1.tileheight)
     end
 
     if self.dirX ~= 0 or self.dirY ~= 0 then
@@ -77,24 +86,13 @@ function Player:playerMovement()
         self.body:setLinearVelocity(vec.x, vec.y)
     end
 
-    if (self.body:getX() + self.sWidth / 2 < 0) then
-        self.body:setX(0)
-    elseif (self.body:getX() - self.sWidth / 2 > map1.width * map1.tilewidth) then
-        self.body:setX(map1.width * map1.tilewidth)
-    end
-    if (self.body:getY() + self.sHeight / 2 < 0) then
-        self.body:setY(0)
-    elseif (self.body:getY() - self.sHeight / 2 > map1.height * map1.tileheight) then
-        self.body:setY(map1.height * map1.tileheight)
-    end
-
     self.dirX = 0
     self.dirY = 0
 end
 
-function Player:setDir(direction)
-    self.dirX = math.cos(direction)
-    self.dirY = math.sin(direction)
+function Player:setDir(dir)
+    self.dirX = math.cos(dir)
+    self.dirY = math.sin(dir)
 end
 
 function Player:setSpeed(vec)
