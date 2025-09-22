@@ -4,14 +4,14 @@ Item.__index = Item
 
 items = {}
 
-function Item:new(item)
+function Item:new(prototype)
   local obj = {
-    id = item.id,
-    name = item.name or "Unnamed",
-    type = item.type or "Undefined",
-    data = item.data or {},
-    sprite = item.sprite or nil,
-    components = item.components or {},
+    id = prototype.id,
+    name = prototype.name or "Unnamed",
+    type = prototype.type or "Undefined",
+    data = prototype.data or {},
+    sprite = prototype.sprite or nil,
+    components = prototype.components or {},
   }
 
   for _, component in ipairs(obj.components) do

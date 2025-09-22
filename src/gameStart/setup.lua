@@ -40,6 +40,7 @@ function setup()
 
     require("src.debugger")
 
+    require("src.update")
     require("src.draw")
 
     require("src.colliders.colliders")
