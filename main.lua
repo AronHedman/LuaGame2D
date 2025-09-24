@@ -1,6 +1,12 @@
 function love.load()
     require("src.load")
     load()
+
+    gamestate = 1
+    --0 paused
+    --1 playing
+    --2 inventory
+    --3 menu
 end
     
 function love.update(dt)

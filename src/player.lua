@@ -29,12 +29,14 @@ function Player:load()
 
 
     self.spritesheet = love.graphics.newImage("assets/testPlayer.png")
-    self.grid = anim8.newGrid(self.spritesheet:getWidth()/4, self.spritesheet:getHeight()/4, self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
+    self.grid = anim8.newGrid(self.spritesheet:getWidth() / 4, self.spritesheet:getHeight() / 4,
+        self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
     self.animations = {}
     self.animations.down = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed)
     self.animations.left = anim8.newAnimation(self.grid("1-4", 2), self.animationSpeed)
     self.animations.right = anim8.newAnimation(self.grid("1-4", 3), self.animationSpeed)
     self.animations.up = anim8.newAnimation(self.grid("1-4", 4), self.animationSpeed)
+    --self.animations.idle = anim8.newAnimation(self.grid("3-4", 1), self.animationSpeed * 4)
     self.animation = self.animations.down
 end
 
@@ -53,7 +55,10 @@ function Player:draw() --draw function
 end
 
 function Player:playerMovement()
-
+    -- if not (love.keyboard.isDown("a") or love.keyboard.isDown("d") or love.keyboard.isDown("w") or
+    --         love.keyboard.isDown("s")) then
+    --     self.animation = self.animations.idle
+    -- end
     if love.keyboard.isDown("a") and (self.body:getX() + (self.sWidth / 2) > 0) then
         self.dirX = -1
         self.facing = "left"

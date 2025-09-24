@@ -1,11 +1,15 @@
 function update(dt)
+    
+    tempUpdate(dt)
+    
+    if gamestate == 0 or gamestate == 3 then return end
     --fetchMousePos()
 
     world:update(dt)
     Player:update(dt)
 
 
-    tempUpdate(dt)
+    
 
 
     drawables = {};
