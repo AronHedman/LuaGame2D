@@ -1,9 +1,11 @@
 function draw()
-    cam:attach() --Attach the camera to the screen
+    
+    --Manual camera transformation in main
+
     map1:drawLayer(map1.layers["Ground"])
 
     for i, obj in ipairs(drawables) do
-        obj:draw()
+        obj:draw() 
     end
 
     map1:drawLayer(map1.layers["Toplayer"])
@@ -13,7 +15,7 @@ function draw()
     drawDebugPre()
 
 
-    cam:detach() --Detach the camera from the screen
+   g.pop() --Reset camera
 
     drawDebugPost()
 end
