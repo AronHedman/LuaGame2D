@@ -2,7 +2,7 @@ local BASE_W, BASE_H = 854, 480 -- virtual resolution (change if you want)
 local scale = 1
 local offsetX, offsetY = 0, 0
 local windowW, windowH = 0, 0
-local integerScaling = false -- toggle for pixel-perfect scaling
+local integerScaling = true -- toggle for pixel-perfect scaling
 
 
 function love.load()
