@@ -10,8 +10,6 @@ function update(dt)
 
 
     
-
-
     drawables = {};
 
     table.insert(drawables, Player)
