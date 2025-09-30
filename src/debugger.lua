@@ -37,8 +37,8 @@ function drawDebugPost()
     g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
     g.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
         70)
-    g.print("VSync: " .. tostring(love.window.getVSync()), 10, 90)
-    g.print("Integer Scaling: " .. tostring(integerScaling), 10, 110)
+    
+    g.print("VSync: " .. love.window.getVSync(), 10, 90)
 
     g.setColor(1, 1, 1, 1) -- Reset color to white
 end

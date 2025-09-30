@@ -20,18 +20,15 @@ function love.keypressed(key)
     end
 
     if key == "f" then
-        local fs = not love.window.getFullscreen()
-        love.window.setFullscreen(fs, "desktop")
-        computeScaleAndOffset()
-    end
-    if key == "i" then
-        integerScaling = not integerScaling
-        computeScaleAndOffset()
+        love.window.setFullscreen(not love.window.getFullscreen())
     end
     if key == "v" then
-        local vs
-        if love.window.getVSync() == 1 then vs = 0 else vs = 1 end
-        love.window.setVSync(vs)
+        local vsync = love.window.getVSync()
+        if vsync == 0 then
+            love.window.setVSync(1)
+        else
+            love.window.setVSync(0)
+        end
     end
     
 end
@@ -42,7 +39,6 @@ end
 --for aiming, utelize sin/cos for player facing mouse (enhetscirkeln)
 
 local old_mouse_x, old_mouse_y
-local mouse_x, mouse_y -- virtual mouse coords
 
 function fetchMousePos()
     local l_mouse_x, l_mouse_y = love.mouse.getPosition()
@@ -50,8 +46,6 @@ function fetchMousePos()
     if l_mouse_x ~= old_mouse_x or l_mouse_y ~= old_mouse_y then
         old_mouse_x, old_mouse_y = l_mouse_x, l_mouse_y
 
-        -- convert to virtual coords here
-        local vx, vy = screenToVirtual(l_mouse_x, l_mouse_y)
-        mouse_x, mouse_y = vx, vy
+        mouse_x, mouse_y = l_mouse_x, l_mouse_y
     end
 end
