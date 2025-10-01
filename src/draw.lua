@@ -13,9 +13,10 @@ function draw()
 
     drawDebugPre()
 
-
+    --drawUI()
     cam:detach() --Detach the camera from the screen
 
     drawDebugPost()
 
+    drawUI()
 end

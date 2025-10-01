@@ -47,6 +47,8 @@ function setup()
     require("src.itemSystem.components.components")
     require("src.itemSystem.items.tools")
 
+    require("src.UI")
+
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")

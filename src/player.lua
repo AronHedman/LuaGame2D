@@ -18,17 +18,22 @@ function Player:load()
     self.scale = 5
     self.linearDamping = 10
 
+    ----Game stats
 
-    self.body = love.physics.newBody(world, self.x, self.y, "dynamic")
+    self.health = 10
+
+    -----
+
+    self.body = p.newBody(world, self.x, self.y, "dynamic")
     self.body:setFixedRotation(true)
     self.body:setLinearDamping(self.linearDamping)
 
-    self.shape = love.physics.newRectangleShape(self.cWidth, self.cHeight)
+    self.shape = p.newRectangleShape(self.cWidth, self.cHeight)
 
-    self.fixture = love.physics.newFixture(self.body, self.shape, 1)
+    self.fixture = p.newFixture(self.body, self.shape, 1)
 
 
-    self.spritesheet = love.graphics.newImage("assets/testPlayer.png")
+    self.spritesheet = g.newImage("assets/testPlayer.png")
     self.grid = anim8.newGrid(self.spritesheet:getWidth() / 4, self.spritesheet:getHeight() / 4,
         self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
     self.animations = {}
