@@ -17,4 +17,6 @@ function draw()
     cam:detach() --Detach the camera from the screen
 
     drawDebugPost()
+
+    drawUI()
 end

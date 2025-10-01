@@ -14,7 +14,7 @@ function love.keypressed(key)
     end
 
     if key == "escape" then
-        if      gamestate == 1 then gamestate = 0
+        if      gamestate == 1 or gamestate == 2 then gamestate = 0
         elseif  gamestate == 0 then gamestate = 1
         end
     end

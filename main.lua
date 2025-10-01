@@ -7,10 +7,10 @@ function love.load()
     load()
 
     gamestate = 1
-    --0 paused
+    --0 menu (esc)
     --1 playing
     --2 inventory
-    --3 menu
+    --3 paused (frozen)
 end
 
 function love.update(dt)
