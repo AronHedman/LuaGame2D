@@ -18,5 +18,4 @@ function draw()
 
     drawDebugPost()
 
-    drawUI()
 end
