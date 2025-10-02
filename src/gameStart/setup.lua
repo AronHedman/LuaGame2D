@@ -31,6 +31,7 @@ function setup()
     mainGrey = { 0.5, 0.5, 0.45, 1 }
     brightGrey = { 0.7, 0.7, 0.65, 1 }
     transparentGrey = { 0.3, 0.3, 0.3, 0.6 }
+    transparentGreyHighlight = { 0.7, 0.7, 0.7, 0.3 }
     thickLine = 5 * scale
     mediumLine = 3 * scale
     thinLine = 1.5 * scale

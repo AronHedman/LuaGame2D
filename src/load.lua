@@ -3,6 +3,6 @@ function load()
     require("src.gameStart.setup")
     setup()
     Player:load()
-
+    inventory:load()
     tempLoad()
 end

@@ -9,7 +9,6 @@ function onesecprint()
     if calls >= 60 then
 
         print(gamestate)
-
         calls = 0
     end
 end
