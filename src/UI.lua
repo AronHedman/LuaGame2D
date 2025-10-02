@@ -1,16 +1,10 @@
-local white = { 1, 1, 1, 1 }
-local black = { 0, 0, 0, 1 }
-local mainGrey = { 0.5, 0.5, 0.45, 1 }
-local brightGrey = { 0.7, 0.7, 0.65, 1 }
-local transparentGrey = { 0.3, 0.3, 0.3, 0.6 }
-
 function drawUI()
     screenW, screenH = g.getDimensions()
 
     drawHUD()
 
     if gamestate == 2 then
-        --inventory:draw()
+        inventory:draw()
     end
     if gamestate == 0 then
         drawMenu()
@@ -25,19 +19,6 @@ end
 function drawMenu()
     g.setColor(1, 1, 1, 1)
     g.print("Menu", 40 * scale, 60 * scale)
-end
-
-function drawHotbar()
-    local hotbarW, hotbarH = 336 * scale, 48 * scale
-
-    g.setColor(mainGrey)
-    g.rectangle("line", (screenW / 2 - hotbarW / 2), (screenH - hotbarH - 20 * scale), hotbarW, hotbarH, 8 * scale)
-    g.setColor(transparentGrey)
-    g.rectangle("fill", (screenW / 2 - hotbarW / 2), (screenH - hotbarH - 20 * scale), hotbarW, hotbarH, 8 * scale)
-
-
-
-    g.setColor(white)
 end
 
 function drawHP()

@@ -1,16 +1,15 @@
 function setup()
-
     g = love.graphics
     p = love.physics
     k = love.keyboard
 
-    p.setMeter(64) --Set to one tile
+    p.setMeter(64)                 --Set to one tile
     world = p.newWorld(0, 0, true) --No gravity no sleeping
 
     g.setDefaultFilter("nearest", "nearest")
 
     -----------------------------------------------
-    
+
     vector = require("libraries.hump-master.vector")
 
     anim8 = require("libraries.anim8")
@@ -26,11 +25,21 @@ function setup()
     camera = require("libraries.hump-master.camera")
     cam = camera()
 
+    -----------------------------------------------------
+    white = { 1, 1, 1, 1 }
+    black = { 0, 0, 0, 1 }
+    mainGrey = { 0.5, 0.5, 0.45, 1 }
+    brightGrey = { 0.7, 0.7, 0.65, 1 }
+    transparentGrey = { 0.3, 0.3, 0.3, 0.6 }
+    thickLine = 5 * scale
+    mediumLine = 3 * scale
+    thinLine = 1.5 * scale
+
     -------------------------------------------------------
     require("src.player")
 
     require("src.objects.trees")
-    
+
 
     require("src.input")
     require("src.functions")
@@ -48,11 +57,10 @@ function setup()
     require("src.itemSystem.items.tools")
 
     require("src.UI")
+    require("src.inventory")
 
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")
-
-
 end
