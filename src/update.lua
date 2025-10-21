@@ -1,4 +1,13 @@
 function update(dt)
+
+    for _, inv in pairs(inventories) do
+        if inv.isActive then
+            gamestate = 2
+            break
+        elseif gamestate == 2 then
+            gamestate = 1
+        end
+    end
     
     tempUpdate(dt)
     

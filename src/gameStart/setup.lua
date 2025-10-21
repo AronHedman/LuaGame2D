@@ -41,7 +41,6 @@ function setup()
 
     require("src.objects.trees")
 
-
     require("src.input")
     require("src.functions")
 
@@ -64,4 +63,5 @@ function setup()
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")
+
 end

@@ -8,14 +8,18 @@ function love.keypressed(key)
     end
 
     if key == "e" then --Gamestate 2 - Inventory
-        if      gamestate == 1 then gamestate = 2
-        elseif  gamestate == 2 then gamestate = 1
+        if inventories["player"].isActive then
+            inventories["player"].isActive = false
+        else
+            inventories["player"].isActive = true
         end
     end
 
     if key == "escape" then
-        if      gamestate == 1 or gamestate == 2 then gamestate = 0
-        elseif  gamestate == 0 then gamestate = 1
+        if gamestate == 1 or gamestate == 2 then
+            gamestate = 0
+        elseif gamestate == 0 then
+            gamestate = 1
         end
     end
 
@@ -30,22 +34,27 @@ function love.keypressed(key)
             love.window.setVSync(0)
         end
     end
-    
+    if key == "i" then
+        if inventories["temp"].isActive then
+            inventories["temp"].isActive = false
+        else
+            inventories["temp"].isActive = true
+        end
+    end
 end
 
 --Mouse input
 
---make a mouse vector or something
---for aiming, utelize sin/cos for player facing mouse (enhetscirkeln)
-
-local old_mouse_x, old_mouse_y
-
-function fetchMousePos()
-    local l_mouse_x, l_mouse_y = love.mouse.getPosition()
-
-    if l_mouse_x ~= old_mouse_x or l_mouse_y ~= old_mouse_y then
-        old_mouse_x, old_mouse_y = l_mouse_x, l_mouse_y
-
-        mouse_x, mouse_y = l_mouse_x, l_mouse_y
+function love.mousepressed(x, y, button)
+    if gamestate == 2 then
+        for _, inv in pairs(inventories) do
+            if inv.isActive then
+                if button == 1 then
+                    inv:leftClick()
+                elseif button == 2 then
+                    inv:rightClick()
+                end
+            end
+        end
     end
 end

@@ -3,9 +3,20 @@ function drawUI()
 
     drawHUD()
 
+    inventory:drawHotbar()
+
     if gamestate == 2 then
-        inventory:draw()
+        inventory.isActive = true
+    else
+        inventory.isActive = false
     end
+
+    for i, inv in pairs(inventories) do
+        if inv.isActive then
+            inv:draw()
+        end
+    end
+
     if gamestate == 0 then
         drawMenu()
     end
@@ -13,7 +24,6 @@ end
 
 function drawHUD()
     drawHP()
-    drawHotbar()
 end
 
 function drawMenu()

@@ -9,7 +9,7 @@ function love.load()
     gamestate = 1
     --0 menu (esc)
     --1 playing
-    --2 inventory
+    --2 inventories
     --3 paused (frozen)
 end
 
@@ -22,7 +22,6 @@ function love.draw()
 end
 
 function love.resize(w, h)
-
     scale = h / baseH
     g.setNewFont(14 * scale)
 

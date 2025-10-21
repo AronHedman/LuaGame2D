@@ -5,16 +5,15 @@ heldItem = nil
 Inventory = {} --Metatable for Inventory class
 
 function Inventory:new(options)
-    local self = setmetatable({}, { __index = Inventory }) --Creates an empty instance that will look up logic from the Inventory table.
+    local self = setmetatable({}, {__index = Inventory}) --Creates an empty instance that will look up logic from the Inventory table.
 
     -- Default options
     local defaults = {
         rows = 5,
         cols = 7,
         hasHotbar = false,
-        scaleMultiplier = 1.0, -- Optional scale adjustment per inventory
+        scaleMultiplier = 1.0,  -- Optional scale adjustment per inventory
         --type = "chest"  -- Can be "player", "chest", "npc", etc., but mainly used for layout logic
-        isActive = false -- Whether this inventory is currently open
     }
 
     -- Merge user options with defaults
@@ -28,9 +27,8 @@ function Inventory:new(options)
     self.hasHotbar = options.hasHotbar
     self.scaleMultiplier = options.scaleMultiplier
     self.type = options.type
-    self.isActive = options.isActive
 
-    self.hotbarSize = self.hasHotbar and self.cols or 0 -- Assume hotbar matches cols if present
+    self.hotbarSize = self.hasHotbar and self.cols or 0  -- Assume hotbar matches cols if present
     self.totalSlots = self.rows * self.cols + self.hotbarSize
     self.gridStart = self.hotbarSize + 1
 
@@ -47,55 +45,36 @@ function Inventory:draw(x, y)
 
     local invScale = 1.5 * scale * self.scaleMultiplier
     local slotSize = 32 * invScale
-    local paddingX = 10 * invScale
-    local paddingY = 10 * invScale
-    local invW = self.cols * (slotSize + paddingX) -- Calculate width properly (slots + paddings between)
-    local invH = self.rows * (slotSize + paddingY) -- Same for height
+    local padding = 16 * invScale
+    local invW = self.cols * (slotSize + padding) - padding  -- Calculate width properly (slots + paddings between)
+    local invH = self.rows * (slotSize + padding) - padding  -- Same for height
 
     -- Default to centered position if x or y not provided
-
-    if self.type == "player" then
-        x = screenW / 2 - invW / 2 - paddingX / 2
-        for i, inv in pairs(inventories) do
-            if inv.isActive and inv.type ~= "player" then
-                x = x - invW * 2 / 7
-                break
-            end
+    if x == nil then
+        x = screenW / 2 - invW / 2
+    end
+    if y == nil then
+        if self.type == "player" then
+            y = screenH / 2 - invH / 2 - 15 * invScale
+        else
+            y = screenH / 2 - invH / 2  -- Simpler centering for non-player
         end
-    else
-        x = screenW / 2 - paddingX / 2 + invW / 2
     end
-
-
-
-    --Offset for other active inventories...
-
-
-
-
-
-
-    if self.type == "player" then
-        y = screenH / 2 - invH / 2 + 15 * invScale
-    else
-        y = screenH / 2 - 3*(slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
-    end
-
 
     -- Draw background rectangle
     g.setColor(mainGrey)
     g.setLineWidth(thickLine)
-    g.rectangle("line", x, y, invW + paddingX, invH + paddingY, 8 * invScale) -- Adjusted for outer padding
+    g.rectangle("line", x, y, invW + padding, invH + padding, 8 * invScale)  -- Adjusted for outer padding
 
     g.setColor(transparentGrey)
-    g.rectangle("fill", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
+    g.rectangle("fill", x, y, invW + padding, invH + padding, 8 * invScale)
 
     g.setLineWidth(mediumLine)
 
     local slotsPerRow = self.cols
     local startSlot = (self.hasHotbar and self.type == "player") and self.gridStart or 1
     local endSlot = self.totalSlots
-    --local drawRows = self.rows
+    local drawRows = self.rows
 
     for i = startSlot, endSlot do
         g.setColor(mainGrey)
@@ -103,11 +82,11 @@ function Inventory:draw(x, y)
         local slot_num = i - startSlot + 1
         local row = math.floor((slot_num - 1) / slotsPerRow)
         local col = (slot_num - 1) % slotsPerRow
-        local j = col - math.floor((self.cols - 1) / 2) -- Center columns (e.g., -3 to 3 for cols=7)
+        local j = col - math.floor((self.cols - 1) / 2)  -- Center columns (e.g., -3 to 3 for cols=7)
 
-        --slot x
-        local sx = x + paddingX / 2 + (col * (slotSize + paddingX)) + paddingX / 2
-        local sy = y + paddingY / 2 + (row * (slotSize + paddingY)) + paddingY / 2
+         --slot x
+        local sx = x + padding / 2 + (col * (slotSize + padding))
+        local sy = y + padding / 2 + (row * (slotSize + padding))
 
         g.rectangle("line", sx, sy, slotSize, slotSize, 4 * invScale)
 
@@ -123,22 +102,24 @@ function Inventory:draw(x, y)
         end
     end
 
-    --Add logic for drawing held items at mouse pos
+        --Add logic for drawing held items at mouse pos
     g.setColor(white)
+
+    self:drawHotbar()
 end
 
 function Inventory:drawHotbar()
     if not self.hasHotbar then return end
 
-    local mx, my = love.mouse.getPosition() -- For hotspot checking in hotbar
+    local mx, my = love.mouse.getPosition()  -- For hotspot checking in hotbar
 
     local hotbarScale = 1.3 * scale * self.scaleMultiplier
     local slotSize = 32 * hotbarScale
     local padding = 16 * hotbarScale
     local hotbarW = (slotSize + padding) * self.hotbarSize - padding
-    local hotbarH = slotSize + padding -- Single row
+    local hotbarH = slotSize + padding  -- Single row
 
-    local hotbarX = screenW / 2 - hotbarW / 2 - padding / 2
+    local hotbarX = screenW / 2 - hotbarW / 2
     local hotbarY = screenH - hotbarH - 15 * hotbarScale
 
     -- Draw hotbar background
@@ -155,7 +136,7 @@ function Inventory:drawHotbar()
     for slot = 1, self.hotbarSize do
         g.setColor(mainGrey)
 
-        local i = slot - centerOffset -- e.g., -3 to 3 for 7 slots
+        local i = slot - centerOffset  -- e.g., -3 to 3 for 7 slots
         local sx = hotbarX + padding / 2 + ((slot - 1) * (slotSize + padding))
         local sy = hotbarY + padding / 2
 
@@ -177,15 +158,11 @@ function Inventory:drawHotbar()
 end
 
 function Inventory:leftClick()
-    local mx, my = love.mouse.getPosition()
     -- Implement click logic here (e.g., detect slot clicked, call takeItem or addItem)
     -- This would need to calculate clicked slot based on mouse position relative to draw position
-
-    print("Left click in inventory at:", mx, my)
 end
 
 function Inventory:rightClick()
-    local mx, my = love.mouse.getPosition()
     -- Similar to leftClick, perhaps for splitting stacks or other actions
 end
 
