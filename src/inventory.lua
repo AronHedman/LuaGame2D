@@ -1,5 +1,6 @@
 -- Global heldItem remains as-is, assuming it's managed by the player or game logic
 heldItem = nil
+hotSlot = {inventory = nil, slot = nil} -- {inventory, slot}
 
 -- Define the Inventory class using Lua's metatable for OOP-like behavior
 Inventory = {} --Metatable for Inventory class
@@ -42,6 +43,10 @@ function Inventory:new(options)
     return self
 end
 
+function Inventory:update()
+    
+end
+
 function Inventory:draw(x, y)
     local mx, my = love.mouse.getPosition()
 
@@ -65,15 +70,6 @@ function Inventory:draw(x, y)
     else
         x = screenW / 2 - paddingX / 2 + invW / 2
     end
-
-
-
-    --Offset for other active inventories...
-
-
-
-
-
 
     if self.type == "player" then
         y = screenH / 2 - invH / 2 + 15 * invScale
@@ -105,7 +101,7 @@ function Inventory:draw(x, y)
         local col = (slot_num - 1) % slotsPerRow
         local j = col - math.floor((self.cols - 1) / 2) -- Center columns (e.g., -3 to 3 for cols=7)
 
-        --slot x
+        --slot x/y
         local sx = x + paddingX / 2 + (col * (slotSize + paddingX)) + paddingX / 2
         local sy = y + paddingY / 2 + (row * (slotSize + paddingY)) + paddingY / 2
 
@@ -115,6 +111,9 @@ function Inventory:draw(x, y)
         if hot then
             g.setColor(transparentGreyHighlight)
             g.rectangle("fill", sx, sy, slotSize, slotSize, 4 * invScale)
+
+            hotSlot.inventory = self
+            hotSlot.slot = i
         end
 
         local item = self.slots[i]
@@ -165,6 +164,8 @@ function Inventory:drawHotbar()
         if hot then
             g.setColor(transparentGreyHighlight)
             g.rectangle("fill", sx, sy, slotSize, slotSize, 4 * hotbarScale)
+            hotSlot.inventory = self
+            hotSlot.slot = slot
         end
 
         local item = self.slots[slot]
@@ -181,12 +182,14 @@ function Inventory:leftClick()
     -- Implement click logic here (e.g., detect slot clicked, call takeItem or addItem)
     -- This would need to calculate clicked slot based on mouse position relative to draw position
 
-    print("Left click in inventory at:", mx, my)
+    print("Left click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
 
 function Inventory:rightClick()
     local mx, my = love.mouse.getPosition()
     -- Similar to leftClick, perhaps for splitting stacks or other actions
+
+    print("Right click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
 
 function Inventory:addItem(item, slot)

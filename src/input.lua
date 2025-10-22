@@ -46,15 +46,11 @@ end
 --Mouse input
 
 function love.mousepressed(x, y, button)
-    if gamestate == 2 then
-        for _, inv in pairs(inventories) do
-            if inv.isActive then
-                if button == 1 then
-                    inv:leftClick()
-                elseif button == 2 then
-                    inv:rightClick()
-                end
-            end
-        end
+    if button == 1 then
+        if hotSlot.inventory ~= nil then hotSlot.inventory:leftClick() end
+        --normal leftClick
+    elseif button == 2 then
+        if hotSlot.inventory ~= nil then hotSlot.inventory:rightClick() end
+        --normal rightClick
     end
 end
