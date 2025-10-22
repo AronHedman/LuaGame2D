@@ -13,3 +13,29 @@ durabilityComponent = {
     --Add inventory logic, delete or broken
   end
 }
+
+axeComponent = {
+
+  onUse = function(self, user, target)
+    --Check if target is a tree
+    if target.type == "tree" then
+      --Chop the tree
+
+      --Reduce durability
+      self:call("onUse", user)
+    end
+  end
+}
+
+meleeComponent = {
+
+  onUse = function(self, user, target)
+    --Check if target is an enemy
+    if target.type == "enemy" then
+      --Deal damage to enemy
+
+      --Reduce durability
+      self:call("onUse", user)
+    end
+  end
+}

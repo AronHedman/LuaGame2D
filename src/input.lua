@@ -47,7 +47,11 @@ end
 
 function love.mousepressed(x, y, button)
     if button == 1 then
-        if hotSlot.inventory ~= nil then hotSlot.inventory:leftClick() end
+        if hotSlot.inventory ~= nil and gamestate == 1 then
+            activeSlot = hotSlot.slot
+        elseif hotSlot.inventory ~= nil then
+            hotSlot.inventory:leftClick()
+        end
         --normal leftClick
     elseif button == 2 then
         if hotSlot.inventory ~= nil then hotSlot.inventory:rightClick() end

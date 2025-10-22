@@ -1,6 +1,6 @@
--- Global heldItem remains as-is, assuming it's managed by the player or game logic
-heldItem = nil
-hotSlot = {inventory = nil, slot = nil} -- {inventory, slot}
+-- Global activeSlot remains as-is, assuming it's managed by the player or game logic
+activeSlot = 1
+hotSlot = { inventory = nil, slot = nil } -- {inventory, slot}
 
 -- Define the Inventory class using Lua's metatable for OOP-like behavior
 Inventory = {} --Metatable for Inventory class
@@ -15,7 +15,7 @@ function Inventory:new(options)
         hasHotbar = false,
         scaleMultiplier = 1.0, -- Optional scale adjustment per inventory
         --type = "chest"  -- Can be "player", "chest", "npc", etc., but mainly used for layout logic
-        isActive = false -- Whether this inventory is currently open
+        isActive = false       -- Whether this inventory is currently open
     }
 
     -- Merge user options with defaults
@@ -44,7 +44,7 @@ function Inventory:new(options)
 end
 
 function Inventory:update()
-    
+
 end
 
 function Inventory:draw(x, y)
@@ -74,7 +74,7 @@ function Inventory:draw(x, y)
     if self.type == "player" then
         y = screenH / 2 - invH / 2 + 15 * invScale
     else
-        y = screenH / 2 - 3*(slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
+        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
     end
 
 
@@ -118,11 +118,16 @@ function Inventory:draw(x, y)
 
         local item = self.slots[i]
         if item ~= nil then
-            -- Draw item sprites/amounts here (customize as needed)
+            g.setColor(white)
+            g.draw(item.sprite, sx, sy, 0, invScale, invScale, 0, 0, 0, 0)
         end
     end
 
-    --Add logic for drawing held items at mouse pos
+    if heldItem ~= nil then
+        g.setColor(white)
+        g.draw(heldItem.sprite, mx, my, 0, invScale, invScale, 0, 0, 0, 0)
+    end
+
     g.setColor(white)
 end
 
@@ -168,9 +173,17 @@ function Inventory:drawHotbar()
             hotSlot.slot = slot
         end
 
+        if activeSlot == slot then
+            g.setColor(brightGrey)
+            g.setLineWidth(thickLine)
+            g.rectangle("line", sx, sy, slotSize, slotSize, 4 * hotbarScale)
+            g.setLineWidth(mediumLine)
+        end
+
         local item = self.slots[slot]
         if item ~= nil then
-            -- Draw item sprites/amounts here (customize as needed)
+            g.setColor(white)
+            g.draw(item.sprite, sx, sy, 0, hotbarScale, hotbarScale, 0, 0, 0, 0)
         end
     end
 
@@ -179,8 +192,12 @@ end
 
 function Inventory:leftClick()
     local mx, my = love.mouse.getPosition()
-    -- Implement click logic here (e.g., detect slot clicked, call takeItem or addItem)
-    -- This would need to calculate clicked slot based on mouse position relative to draw position
+
+    if heldItem ~= nil then
+        self:addItem(heldItem, hotSlot.slot)
+    else
+        self:takeItem(hotSlot.slot)
+    end
 
     print("Left click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
@@ -194,8 +211,7 @@ end
 
 function Inventory:addItem(item, slot)
     if heldItem ~= nil then
-        self.slots[slot] = heldItem
-        heldItem = nil
+        self.slots[slot], heldItem = heldItem, self.slots[slot]
     else
         for i = 1, self.totalSlots do
             if self.slots[i] == nil then
@@ -207,8 +223,7 @@ function Inventory:addItem(item, slot)
 end
 
 function Inventory:takeItem(slot)
-    heldItem = self.slots[slot]
-    self.slots[slot] = nil
+    heldItem, self.slots[slot] = self.slots[slot], nil
 end
 
 function Inventory:dropItem()

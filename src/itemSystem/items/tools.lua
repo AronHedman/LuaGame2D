@@ -8,6 +8,6 @@ iron_axe = {
         attackSpeed = 0.5,
         toolEffectiveness = 10
     },
-    sprite = ("assets/iron_axe.png"),
-    components = {durabilityComponent, axeComponent, meleeComponent}
+    sprite = ("assets/axe.png"),
+    components = { durabilityComponent, axeComponent, meleeComponent }
 }
