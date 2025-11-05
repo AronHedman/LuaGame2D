@@ -36,6 +36,8 @@ function setup()
     mediumLine = 3 * scale
     thinLine = 1.5 * scale
 
+    pi = math.pi
+
     -------------------------------------------------------
     require("src.player")
 
@@ -63,5 +65,4 @@ function setup()
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")
-
 end
