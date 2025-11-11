@@ -41,6 +41,11 @@ function love.keypressed(key)
             inventories["temp"].isActive = true
         end
     end
+    if key == "g" then
+        hit, info = raycast(Player)
+
+        --print stuff
+    end
 end
 
 --Mouse input

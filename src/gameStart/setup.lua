@@ -5,7 +5,6 @@ function setup()
 
     p.setMeter(64)                 --Set to one tile
     world = p.newWorld(0, 0, true) --No gravity no sleeping
-    world:setCallbacks(BeginContact)
 
     g.setDefaultFilter("nearest", "nearest")
 
@@ -45,7 +44,9 @@ function setup()
     require("src.objects.trees")
 
     require("src.input")
-    require("src.functions")
+
+    require("src.functions.functions")
+    require("src.functions.raycast")
 
     require("src.debugger")
 

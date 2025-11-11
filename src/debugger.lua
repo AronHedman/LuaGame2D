@@ -1,9 +1,10 @@
 function drawDebugPre()
     if not debugMode then return end
 
-    g.setColor(1, 1, 1, 1) -- Reset color to white
+    g.setColor(1, 1, 1, 1)
     g.setLineWidth(3)
 
+    -- Draw all physics shapes
     for _, body in ipairs(world:getBodies()) do
         for _, fixture in ipairs(body:getFixtures()) do
             local shape = fixture:getShape()
@@ -22,9 +23,14 @@ function drawDebugPre()
         end
     end
 
+    -- Draw debug points (your existing list)
     for i, obj in ipairs(drawables) do
         g.circle("fill", obj.x, obj.y, 5)
     end
+
+
+
+    g.setColor(1, 1, 1)
 end
 
 function drawDebugPost()
@@ -37,7 +43,7 @@ function drawDebugPost()
     g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
     g.print("Player tile coord: (" .. getTileCoords(Player).x .. ", " .. getTileCoords(Player).y .. ")", 10,
         70)
-    
+
     g.print("VSync: " .. love.window.getVSync(), 10, 90)
 
     g.setColor(1, 1, 1, 1) -- Reset color to white

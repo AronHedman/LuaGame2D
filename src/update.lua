@@ -1,5 +1,4 @@
 function update(dt)
-
     for _, inv in pairs(inventories) do
         if inv.isActive then
             gamestate = 2
@@ -8,17 +7,18 @@ function update(dt)
             gamestate = 1
         end
     end
-    
+
     tempUpdate(dt)
-    
+
     if gamestate == 0 or gamestate == 3 then return end
     --fetchMousePos()
 
     world:update(dt)
     Player:update(dt)
+    updateRaycasting(dt)
 
 
-    
+
     drawables = {};
 
     table.insert(drawables, Player)
