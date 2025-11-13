@@ -1,10 +1,10 @@
-local Raycast = {}
+local Raycast = { list = {} }
 Raycast.__index = Raycast
 
 ----------
 ---add variable checkType (or something) to chenge between type of world:raycast() returns (-1, 0, 1, fraction)
-local testDuration = 100 --change all instances after testing to a default value
-local defRayAmount = 64  --Change to change base step count (amount in radians of pi/ rayAmount, so 64 = 32 rays per check)
+Raycast.testDuration = 100 --change all instances after testing to a default value
+Raycast.defRayAmount = 64  --Change to change base step count (amount in radians of pi/ rayAmount, so 64 = 32 rays per check)
 
 function Raycast:new(source, angle, radius, dVec, duration, rayAmount)
     if not source.body then return end
@@ -82,8 +82,6 @@ function Raycast:update(dt)
 end
 
 function Raycast:draw()
-    if not debugMode then return end
-
     local cdx, cdy = math.cos(self.centerAngle), math.sin(self.centerAngle)
     local cex, cey = self.sx + cdx * self.radius, self.sy + cdy * self.radius
     g.setColor(0, 1, 0, 0.5) -- Green semi-transparent for center/dVec
@@ -101,27 +99,25 @@ end
 -------------------
 ---Raycast helper functions
 
-local activeRaycasters = {}
-
-function raycast(self, angle, radius, dVec, duration, rayAmount)
+function Raycast:raycast(angle, radius, dVec, duration, rayAmount)
     local sx, sy = self.body:getPosition()
     local mx, my = cam:mousePosition()
 
-    local angle = angle or math.pi / 4        -- Default to 45 degrees
-    local radius = radius or 100              -- Default radius
-    local duration = duration or testDuration --Change to change speed of sweep
-    local rayAmount = rayAmount or defRayAmount or 32
+    local angle = angle or math.pi / 4                -- Default to 45 degrees
+    local radius = radius or 100                      -- Default radius
+    local duration = duration or Raycast.testDuration --Change to change speed of sweep
+    local rayAmount = rayAmount or Raycast.defRayAmount or 32
 
     dVec = dVec or { x = mx - sx, y = my - sy }
 
     if not self.raycaster then
         self.raycaster = Raycast:new(self, angle, radius, dVec, duration, rayAmount)
-        table.insert(activeRaycasters, self.raycaster)
+        table.insert(Raycast.list, self.raycaster)
     else
         if not self.raycaster.active then
             self.raycaster.angle = angle or self.raycaster.angle
-            self.raycaster.radius = radius or 100              -- Default radius
-            self.raycaster.duration = duration or testDuration -- Default duration of 1 second
+            self.raycaster.radius = radius or 100                      -- Default radius
+            self.raycaster.duration = duration or Raycast.testDuration -- Default duration of 1 second
 
             local len = math.sqrt(dVec.x ^ 2 + dVec.y ^ 2)
             local nx, ny = dVec.x / len, dVec.y / len
@@ -140,29 +136,26 @@ function raycast(self, angle, radius, dVec, duration, rayAmount)
             self.raycaster.active = true
             self.raycaster.elapsed = 0
             self.raycaster.hits = {}
-            table.insert(activeRaycasters, self.raycaster)
+            table.insert(Raycast.list, self.raycaster)
         end
     end
 end
 
-function updateRaycasters(dt)
-    for i = #activeRaycasters, 1, -1 do
-        local rc = activeRaycasters[i]
+function Raycast.updateRaycasters(dt)
+    for i = #Raycast.list, 1, -1 do
+        local rc = Raycast.list[i]
         rc:update(dt)
         if not rc.active then
-            table.remove(activeRaycasters, i)
+            table.remove(Raycast.list, i)
         end
     end
 end
 
-function drawRaycasters()
-    for _, rc in ipairs(activeRaycasters) do
+function Raycast.drawRaycasters()
+    if not debugMode then return end
+    for _, rc in ipairs(Raycast.list) do
         rc:draw()
     end
 end
 
-return {
-    raycast = raycast,
-    update = updateRaycasters,
-    draw = drawRaycasters
-}
+return Raycast

@@ -3,6 +3,8 @@ function setup()
     p = love.physics
     k = love.keyboard
 
+    require("src.globals")
+
     p.setMeter(64)                 --Set to one tile
     world = p.newWorld(0, 0, true) --No gravity no sleeping
 
@@ -63,7 +65,10 @@ function setup()
     require("src.UI")
     require("src.inventory")
 
-    Raycastingsystem = require("src.functions.raycast")
+    Raycast = require("src.functions.raycast")
+    Pathfinder = require("src.entities.pathfinder.pathfinder")
+
+    Testmob = require("src.entities.mob.testmob")
 
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")

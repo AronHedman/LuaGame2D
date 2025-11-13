@@ -23,7 +23,7 @@ function drawDebugPre()
         end
     end
 
-    Raycastingsystem.draw()
+    Raycast.drawRaycasters()
 
     -- Draw debug points (your existing list)
     for i, obj in ipairs(drawables) do

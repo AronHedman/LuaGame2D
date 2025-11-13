@@ -16,12 +16,16 @@ function update(dt)
     world:update(dt)
     Player:update(dt)
 
-    Raycastingsystem.update(dt)
+    Testmob.updateTestmobs(dt)
+    Pathfinder.updatePathfinders(dt)
+    Raycast.updateRaycasters(dt)
+
 
 
     drawables = {};
 
     table.insert(drawables, Player)
+    Testmob.drawTestmobs() --Inserts Testmob into drawables
 
     for i, obj in ipairs(getTrees()) do
         table.insert(drawables, obj)

@@ -4,10 +4,10 @@ function Player:load()
     self.x = 200;
     self.y = 200;
 
-    self.sWidth = 12
+    self.sWidth = 12 --Sprite witdth
     self.sHeight = 18
 
-    self.cWidth = 24
+    self.cWidth = 24 --Collision width
     self.cHeight = 24
 
     self.speed = 175
@@ -16,8 +16,6 @@ function Player:load()
     self.facing = "down"
     self.animationSpeed = 0.2
     self.scale = 5
-    self.linearDamping = 10
-
     ----Game stats
 
     self.health = 10
@@ -26,7 +24,7 @@ function Player:load()
 
     self.body = p.newBody(world, self.x, self.y, "dynamic")
     self.body:setFixedRotation(true)
-    self.body:setLinearDamping(self.linearDamping)
+    self.body:setLinearDamping(linearDamping)
 
     self.shape = p.newRectangleShape(self.cWidth, self.cHeight)
 
@@ -46,7 +44,7 @@ function Player:load()
 end
 
 function Player:update(dt)
-    self:playerMovement(dt)
+    self:playerMovement()
 
     self.x = self.body:getX()
     self.y = self.body:getY()

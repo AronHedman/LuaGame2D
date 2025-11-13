@@ -29,6 +29,8 @@ function load()
     tempInventory.slots[3] = Item:new(iron_axe)
     ------
 
+    testmob = Testmob:initTestmob(400, 300)
 
+    -------
     tempLoad()
 end
