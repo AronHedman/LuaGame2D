@@ -23,12 +23,12 @@ function drawDebugPre()
         end
     end
 
+    Raycastingsystem.draw()
+
     -- Draw debug points (your existing list)
     for i, obj in ipairs(drawables) do
         g.circle("fill", obj.x, obj.y, 5)
     end
-
-
 
     g.setColor(1, 1, 1)
 end

@@ -42,9 +42,13 @@ function love.keypressed(key)
         end
     end
     if key == "g" then
-        hit, info = raycast(Player)
+        raycast(Player, math.pi / 17, 100, nil, 2)
 
-        --print stuff
+        print(Player.raycaster.hits[1])
+    end
+    if key == "h" then
+        raycast(Player, math.pi / 2, 200, nil, 1, 32)
+        print(Player.raycaster.hits[1])
     end
 end
 

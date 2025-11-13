@@ -15,8 +15,8 @@ function update(dt)
 
     world:update(dt)
     Player:update(dt)
-    updateRaycasting(dt)
 
+    Raycastingsystem.update(dt)
 
 
     drawables = {};

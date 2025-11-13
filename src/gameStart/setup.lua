@@ -63,6 +63,8 @@ function setup()
     require("src.UI")
     require("src.inventory")
 
+    Raycastingsystem = require("src.functions.raycast")
+
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
