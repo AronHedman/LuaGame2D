@@ -1,32 +1,45 @@
 local Pathfinder = { list = {} }
 Pathfinder.__index = Pathfinder
 
-function Pathfinder:new()
-    return setmetatable({}, Pathfinder)
+-- Constructor
+function Pathfinder:new(source)
+    local obj = setmetatable({}, Pathfinder)
+
+    obj.source = source
+    obj.x = source.x
+    obj.y = source.y
+
+    obj.oldTarget = nil
+    obj.newTarget = nil
+    obj.active = true
+
+    table.insert(Pathfinder.list, obj)
+    return obj
 end
 
 function Pathfinder:update(dt)
-
+    -- keep internal position synced with source
+    -- Can be removed if every self.x is changed to self.source.x. This will make more code but fewer update calls so maybe better performance.
+    self.x = self.source.x
+    self.y = self.source.y
 end
 
+-- Draw (debug only)
 function Pathfinder:draw()
+    -- Add visualisation
 end
 
-function Pathfinder:pathfind()
+-- Pathfinding entry point
+function Pathfinder:pathfind(target)
+    self.oldTarget = target or { x = self.x, y = self.y }
 
-end
-
-function Pathfinder.updatePathfinders(dt)
-    for i = #Pathfinder.list, 1, -1 do
-        local pathfinder = Pathfinder.list[i]
-        pathfinder:update(dt)
-    end
+    return self.newTarget
 end
 
 function Pathfinder.drawPathfinders()
     if not debugMode then return end
-    for i, pathfinder in ipairs(Pathfinder.list) do
-        pathfinder:draw()
+    for _, pf in ipairs(Pathfinder.list) do
+        pf:draw()
     end
 end
 
