@@ -17,7 +17,6 @@ function update(dt)
     Player:update(dt)
 
     Testmob.updateTestmobs(dt)
-    Pathfinder.updatePathfinders(dt)
     Raycast.updateRaycasters(dt)
 
 
@@ -27,7 +26,7 @@ function update(dt)
     table.insert(drawables, Player)
     Testmob.drawTestmobs() --Inserts Testmob into drawables
 
-    for i, obj in ipairs(getTrees()) do
+    for _, obj in ipairs(getTrees()) do
         table.insert(drawables, obj)
     end
 

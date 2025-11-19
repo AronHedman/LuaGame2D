@@ -67,6 +67,7 @@ function setup()
 
     Raycast = require("src.functions.raycast")
     Pathfinder = require("src.entities.pathfinder.pathfinder")
+    StateMachine = require("src.entities.stateMachine")
 
     Testmob = require("src.entities.mob.testmob")
 

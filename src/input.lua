@@ -7,6 +7,8 @@ function love.keypressed(key)
         debugMode = not debugMode
     end
 
+    if gamestate == 1.5 then return end
+
     if key == "e" then --Gamestate 2 - Inventory
         if inventories["player"].isActive then
             inventories["player"].isActive = false

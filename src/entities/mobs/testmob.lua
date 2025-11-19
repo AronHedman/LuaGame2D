@@ -41,11 +41,12 @@ function Testmob:new(x, y)
     obj.animation = obj.animations.down
 
     -- AI state
-    obj.behaviours = { "neutral", "aggressive", "skittish" } -- 1 = neutral, 2 = aggressive, 3 = skittish
-    obj.states = { "wandering", "targeting", "fleeing" }     -- 1 = wandering, 2 = targeting, 3 = fleeing
+    obj.behaviours = { "neutral", "aggressive", "skittish" }
+    obj.states = { "wandering", "targeting", "fleeing" } --Predefined states, more can be applied by the actionManager
     obj.target = { x = obj.x, y = obj.y }
 
     obj.alive = true
+    obj.stateMachine = StateMachine:new(obj)
     obj.pathfinder = nil
 
     return obj
