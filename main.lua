@@ -37,6 +37,7 @@ function camBounds()
     local halfW = (w / zoom) / 2
     local halfH = (h / zoom) / 2
 
+
     if cam.x < halfW then
         cam.x = halfW
     elseif cam.x > map1.width * map1.tilewidth - halfW then

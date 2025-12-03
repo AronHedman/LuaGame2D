@@ -19,8 +19,6 @@ function update(dt)
     Testmob.updateTestmobs(dt)
     Raycast.updateRaycasters(dt)
 
-
-
     drawables = {};
 
     table.insert(drawables, Player)
@@ -29,7 +27,6 @@ function update(dt)
     for _, obj in ipairs(getTrees()) do
         table.insert(drawables, obj)
     end
-
 
     table.sort(drawables, function(a, b) return a.y < b.y end)
 

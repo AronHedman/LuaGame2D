@@ -72,9 +72,9 @@ function Inventory:draw(x, y)
     end
 
     if self.type == "player" then
-        y = screenH / 2 - invH / 2 + 15 * invScale
+        y = map1.height / 2 - invH / 2 + 15 * invScale
     else
-        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
+        y = map1.height / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
     end
 
 

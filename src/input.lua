@@ -44,7 +44,7 @@ function love.keypressed(key)
         end
     end
     if key == "g" then
-        Raycast.raycast(Player, math.pi / 17, 100, nil, 2)
+        Player.raycast(Player, pi / 17, 100, nil, 2)
 
         if Player.raycaster.hits then
             print(Player.raycaster.hits.type)
@@ -55,6 +55,9 @@ function love.keypressed(key)
         if Player.raycaster.hits then
             print(Player.raycaster.hits.type)
         end
+    end
+    if key == "m" then
+        Player.actionManager:addAction(Actions.playerAttack)
     end
 end
 
