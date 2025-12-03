@@ -1,6 +1,8 @@
 function drawUI()
     screenW, screenH = g.getDimensions()
 
+    hotSlot = { inventory = nil, slot = nil }
+
     drawHUD()
 
     inventory:drawHotbar()

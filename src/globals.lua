@@ -1,0 +1,1 @@
+linearDamping = 10

@@ -5,8 +5,8 @@ function load()
     Player:load()
 
     inventories = {}
-    
-    inventory = Inventory:new{
+
+    inventory = Inventory:new {
         rows = 4,
         hasHotbar = true,
         type = "player"
@@ -14,8 +14,8 @@ function load()
     inventories["player"] = inventory
 
 
-    ----temp 
-    tempInventory = Inventory:new{
+    ----temp
+    tempInventory = Inventory:new {
         rows = 5,
         cols = 4,
         hasHotbar = false,
@@ -23,8 +23,14 @@ function load()
     }
     inventories["temp"] = tempInventory
 
+    inventory.slots[1] = Item:new(iron_axe)
+    inventory.slots[17] = Item:new(iron_axe)
+
+    tempInventory.slots[3] = Item:new(iron_axe)
     ------
-    
-    
+
+    testmob = Testmob:initTestmob(400, 300)
+
+    -------
     tempLoad()
 end

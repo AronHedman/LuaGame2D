@@ -6,7 +6,7 @@ function draw()
         obj:draw()
     end
 
-    
+
     map1:drawLayer(map1.layers["Toplayer"])
 
     tempDraw()

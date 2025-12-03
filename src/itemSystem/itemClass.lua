@@ -1,4 +1,3 @@
-
 Item = {}
 Item.__index = Item
 
@@ -10,7 +9,7 @@ function Item:new(prototype)
     name = prototype.name or "Unnamed",
     type = prototype.type or "Undefined",
     data = prototype.data or {},
-    sprite = prototype.sprite or nil,
+    sprite = g.newImage(prototype.sprite) or nil,
     components = prototype.components or {},
   }
 
@@ -25,7 +24,7 @@ function Item:new(prototype)
 end
 
 function Item:call(event, ...)
-  for _,component in ipairs(self.components) do
+  for _, component in ipairs(self.components) do
     if component[event] then
       component[event](self, ...)
     end

@@ -1,7 +1,8 @@
--- Global heldItem remains as-is, assuming it's managed by the player or game logic
-heldItem = nil
+-- Global activeSlot remains as-is, assuming it's managed by the player or game logic
+activeSlot = 1
+hotSlot = { inventory = nil, slot = nil } -- {inventory, slot}
 
-Slot = {} -- Metatable for Slot class
+Slot = {}                                 -- Metatable for Slot class
 
 function Slot:new(options)
     local self = setmetatable({}, { __index = Slot })
@@ -86,9 +87,9 @@ function Inventory:new(options)
         rows = 5,
         cols = 7,
         hasHotbar = false,
-        scaleMultiplier = 1.0,
-        type = "chest", -- "player", "chest", etc.
-        isActive = false
+        scaleMultiplier = 1.0, -- Optional scale adjustment per inventory
+        --type = "chest"  -- Can be "player", "chest", "npc", etc., but mainly used for layout logic
+        isActive = false       -- Whether this inventory is currently open
     }
 
     -- Merge user options with defaults
@@ -127,6 +128,10 @@ function Inventory:new(options)
     return self
 end
 
+function Inventory:update()
+
+end
+
 function Inventory:draw(x, y)
     local g = love.graphics
     local invScale = 1.5 * scale * self.scaleMultiplier
@@ -145,10 +150,14 @@ function Inventory:draw(x, y)
                 break
             end
         end
-        y = screenH / 2 - invH / 2 + 15 * invScale
     else
         x = screenW / 2 - paddingX / 2 + invW / 2
-        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale
+    end
+
+    if self.type == "player" then
+        y = map1.height / 2 - invH / 2 + 15 * invScale
+    else
+        y = map1.height / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
     end
 
     -- Draw background
@@ -158,16 +167,49 @@ function Inventory:draw(x, y)
 
     g.setColor(transparentGrey)
     g.rectangle("fill", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
+    g.setLineWidth(mediumLine)
 
-    for i = self.gridStart, self.totalSlots do
-        local slot = self.slots[i]
-        slot:draw(x + paddingX / 2, y + paddingY / 2, invScale, slotSize, paddingX, paddingY)
+    local slotsPerRow = self.cols
+    local startSlot = (self.hasHotbar and self.type == "player") and self.gridStart or 1
+    local endSlot = self.totalSlots
+    --local drawRows = self.rows
+
+    for i = startSlot, endSlot do
+        g.setColor(mainGrey)
+
+        local slot_num = i - startSlot + 1
+        local row = math.floor((slot_num - 1) / slotsPerRow)
+        local col = (slot_num - 1) % slotsPerRow
+        local j = col - math.floor((self.cols - 1) / 2) -- Center columns (e.g., -3 to 3 for cols=7)
+
+        --slot x/y
+        local sx = x + paddingX / 2 + (col * (slotSize + paddingX)) + paddingX / 2
+        local sy = y + paddingY / 2 + (row * (slotSize + paddingY)) + paddingY / 2
+
+        g.rectangle("line", sx, sy, slotSize, slotSize, 4 * invScale)
+
+        local hot = mx > sx and mx < sx + slotSize and my > sy and my < sy + slotSize
+        if hot then
+            g.setColor(transparentGreyHighlight)
+            g.rectangle("fill", sx, sy, slotSize, slotSize, 4 * invScale)
+
+            hotSlot.inventory = self
+            hotSlot.slot = i
+        end
+
+        local item = self.slots[i]
+        if item ~= nil then
+            g.setColor(white)
+            g.draw(item.sprite, sx, sy, 0, invScale, invScale, 0, 0, 0, 0)
+        end
     end
 
-    -- Draw held item at mouse pos (as in original)
-    if heldItem then
-        -- Add drawing logic here, e.g., follow mouse
+    if heldItem ~= nil then
+        g.setColor(white)
+        g.draw(heldItem.sprite, mx, my, 0, invScale, invScale, 0, 0, 0, 0)
     end
+
+    g.setColor(white)
 end
 
 function Inventory:drawHotbar()
@@ -190,102 +232,75 @@ function Inventory:drawHotbar()
 
     g.setColor(transparentGrey)
     g.rectangle("fill", hotbarX, hotbarY, hotbarW + padding, hotbarH, 8 * hotbarScale)
+    g.setLineWidth(mediumLine)
 
-    for i = 1, self.hotbarSize do
-        local slot = self.slots[i]
-        slot:draw(hotbarX, hotbarY, hotbarScale, slotSize, padding, padding)
+    local centerOffset = math.ceil(self.cols / 2)
+    for slot = 1, self.hotbarSize do
+        g.setColor(mainGrey)
+
+        local i = slot - centerOffset -- e.g., -3 to 3 for 7 slots
+        local sx = hotbarX + padding / 2 + ((slot - 1) * (slotSize + padding))
+        local sy = hotbarY + padding / 2
+
+        g.rectangle("line", sx, sy, slotSize, slotSize, 4 * hotbarScale)
+
+        local hot = mx > sx and mx < sx + slotSize and my > sy and my < sy + slotSize
+        if hot then
+            g.setColor(transparentGreyHighlight)
+            g.rectangle("fill", sx, sy, slotSize, slotSize, 4 * hotbarScale)
+            hotSlot.inventory = self
+            hotSlot.slot = slot
+        end
+
+        if activeSlot == slot then
+            g.setColor(brightGrey)
+            g.setLineWidth(thickLine)
+            g.rectangle("line", sx, sy, slotSize, slotSize, 4 * hotbarScale)
+            g.setLineWidth(mediumLine)
+        end
+
+        local item = self.slots[slot]
+        if item ~= nil then
+            g.setColor(white)
+            g.draw(item.sprite, sx, sy, 0, hotbarScale, hotbarScale, 0, 0, 0, 0)
+        end
     end
 end
 
 function Inventory:leftClick()
-    local clickedSlot = self:getHoveredSlot()
-    if clickedSlot then
-        clickedSlot:leftClick()
-    elseif heldItem then
-        --self:dropItem() -- Drop if clicked outside
+    local mx, my = love.mouse.getPosition()
+
+    if heldItem ~= nil then
+        self:addItem(heldItem, hotSlot.slot)
+    else
+        self:takeItem(hotSlot.slot)
     end
+
+    print("Left click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
 
 function Inventory:rightClick()
-    local clickedSlot = self:getHoveredSlot()
-    if clickedSlot then
-        clickedSlot:rightClick()
-    end
+    local mx, my = love.mouse.getPosition()
+    -- Similar to leftClick, perhaps for splitting stacks or other actions
+
+    print("Right click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
 
-function Inventory:getHoveredGridSlot()
-    if not self.isActive then return nil end
-    local invScale = 1.5 * scale * self.scaleMultiplier
-    local slotSize = 32 * invScale
-    local paddingX = 10 * invScale
-    local paddingY = 10 * invScale
-    -- Compute x, y as in draw()... (insert your position logic here)
-    -- For example:
-    if self.type == "player" then
-        x = screenW / 2 - invW / 2 - paddingX / 2
-        for i, inv in pairs(inventories) do
-            if inv.isActive and inv.type ~= "player" then
-                x = x - invW * 2 / 7
+function Inventory:addItem(item, slot)
+    if heldItem ~= nil then
+        self.slots[slot], heldItem = heldItem, self.slots[slot]
+    else
+        for i = 1, self.totalSlots do
+            if self.slots[i] == nil then
+                self.slots[i] = item
                 break
             end
         end
-        y = screenH / 2 - invH / 2 + 15 * invScale
-    else
-        x = screenW / 2 - paddingX / 2 + invW / 2
-        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale
     end
-    for i = self.gridStart, self.totalSlots do
-        local slot = self.slots[i]
-        if slot:isHovered(x + paddingX / 2, y + paddingY / 2, invScale, slotSize, paddingX, paddingY) then
-            return slot
-        end
-    end
-    return nil
 end
 
---Försök kombinera get..Slot till en funktion
---annars använd hotbarSlot() också...
-
-function Inventory:getHoveredHotbarSlot()
-    local hotbarScale = 1.3 * scale * self.scaleMultiplier
-    local slotSize = 32 * hotbarScale
-    local padding = 16 * hotbarScale
-    local hotbarW = (slotSize + padding) * self.hotbarSize - padding
-    local hotbarX = screenW / 2 - hotbarW / 2 - padding / 2
-    local hotbarY = screenH - (slotSize + padding) - 15 * hotbarScale -- Adjusted from hotbarH
-
-    for i = 1, self.hotbarSize do
-        local slot = self.slots[i]
-        if slot:isHovered(hotbarX, hotbarY, hotbarScale, slotSize, padding, padding) then
-            return slot
-        end
-    end
-    return nil
-end
-
----------------------------
-
-function Inventory:addItem(item)
-    if heldItem then
-        -- Find empty slot or stack (loop through self.slots)
-        for i = 1, self.totalSlots do
-            local slot = self.slots[i]
-            if slot.item == nil then -- Or check if stackable
-                slot.item = heldItem
-                heldItem = nil
-                return
-            end
-        end
-    else
-        -- Similar loop to add directly from ground or loot
-        for i = 1, self.totalSlots do
-            local slot = self.slots[i]
-            if slot.item == nil then
-                slot.item = item
-                return
-            end
-        end
-    end
+function Inventory:takeItem(slot)
+    heldItem, self.slots[slot] = self.slots[slot], nil
 end
 
 function Inventory:dropItem()

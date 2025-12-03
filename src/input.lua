@@ -7,6 +7,8 @@ function love.keypressed(key)
         debugMode = not debugMode
     end
 
+    if gamestate == 1.5 then return end
+
     if key == "e" then --Gamestate 2 - Inventory
         if inventories["player"].isActive then
             inventories["player"].isActive = false
@@ -41,20 +43,36 @@ function love.keypressed(key)
             inventories["temp"].isActive = true
         end
     end
+    if key == "g" then
+        Player.raycast(Player, pi / 17, 100, nil, 2)
+
+        if Player.raycaster.hits then
+            print(Player.raycaster.hits.type)
+        end
+    end
+    if key == "h" then
+        Raycast.raycast(Player, math.pi / 2, 200, nil, 1, 32)
+        if Player.raycaster.hits then
+            print(Player.raycaster.hits.type)
+        end
+    end
+    if key == "m" then
+        Player.actionManager:addAction(Actions.playerAttack)
+    end
 end
 
 --Mouse input
 
 function love.mousepressed(x, y, button)
-    if gamestate == 2 then
-        for _, inv in pairs(inventories) do
-            if inv.isActive then
-                if button == 1 then
-                    inv:leftClick()
-                elseif button == 2 then
-                    inv:rightClick()
-                end
-            end
+    if button == 1 then
+        if hotSlot.inventory ~= nil and gamestate == 1 then
+            activeSlot = hotSlot.slot
+        elseif hotSlot.inventory ~= nil then
+            hotSlot.inventory:leftClick()
         end
+        --normal leftClick
+    elseif button == 2 then
+        if hotSlot.inventory ~= nil then hotSlot.inventory:rightClick() end
+        --normal rightClick
     end
 end

@@ -1,3 +1,3 @@
 function tempLoad()
-    createTree()   
+    createTree()
 end
