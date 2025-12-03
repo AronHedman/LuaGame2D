@@ -2,85 +2,11 @@
 activeSlot = 1
 hotSlot = { inventory = nil, slot = nil } -- {inventory, slot}
 
-Slot = {}                                 -- Metatable for Slot class
-
-function Slot:new(options)
-    local self = setmetatable({}, { __index = Slot })
-
-    -- Default options
-    local defaults = {
-        row = 0,
-        col = 0,
-        item = nil,
-        isHotbar = false -- Flag for hotbar-specific styling/behavior if needed
-    }
-
-    -- Merge user options with defaults
-    options = options or {}
-    for k, v in pairs(defaults) do
-        if options[k] == nil then options[k] = v end
-    end
-
-    self.row = options.row
-    self.col = options.col
-    self.item = options.item
-    self.isHotbar = options.isHotbar
-
-    return self
-end
-
-function Slot:draw(invX, invY, invScale, slotSize, paddingX, paddingY)
-    local mx, my = love.mouse.getPosition()
-    local g = love.graphics
-
-    g.setColor(mainGrey)
-    g.setLineWidth(mediumLine)
-
-    local sx = invX + paddingX / 2 + (self.col * (slotSize + paddingX))
-    local sy = invY + paddingY / 2 + (self.row * (slotSize + paddingY))
-
-    g.rectangle("line", sx, sy, slotSize, slotSize, 4 * invScale)
-
-    local hot = mx > sx and mx < sx + slotSize and my > sy and my < sy + slotSize
-    if hot then
-        g.setColor(transparentGreyHighlight)
-        g.rectangle("fill", sx, sy, slotSize, slotSize, 4 * invScale)
-    end
-
-    if self.item ~= nil then
-        -- Draw item sprites/amounts
-    end
-
-    g.setColor(white)
-end
-
-function Slot:isHovered(invX, invY, invScale, slotSize, paddingX, paddingY)
-    local mx, my = love.mouse.getPosition()
-
-    local sx = invX + paddingX / 2 + (self.col * (slotSize + paddingX))
-    local sy = invY + paddingY / 2 + (self.row * (slotSize + paddingY))
-    return mx > sx and mx < sx + slotSize and my > sy and my < sy + slotSize
-end
-
-function Slot:leftClick()
-    if heldItem ~= nil then
-        -- Swap or add to stack (add logic if items stack)
-        self.item, heldItem = heldItem, self.item
-    else
-        heldItem = self.item
-        self.item = nil
-    end
-end
-
-function Slot:rightClick()
-    --Splitting stacks, alternatively use for some kind of crafting system
-end
-
--- Define the Inventory class
-Inventory = {} -- Metatable for Inventory class
+-- Define the Inventory class using Lua's metatable for OOP-like behavior
+Inventory = {} --Metatable for Inventory class
 
 function Inventory:new(options)
-    local self = setmetatable({}, { __index = Inventory })
+    local self = setmetatable({}, { __index = Inventory }) --Creates an empty instance that will look up logic from the Inventory table.
 
     -- Default options
     local defaults = {
@@ -105,24 +31,13 @@ function Inventory:new(options)
     self.type = options.type
     self.isActive = options.isActive
 
-    self.hotbarSize = self.hasHotbar and self.cols or 0
+    self.hotbarSize = self.hasHotbar and self.cols or 0 -- Assume hotbar matches cols if present
     self.totalSlots = self.rows * self.cols + self.hotbarSize
     self.gridStart = self.hotbarSize + 1
 
-    -- Create slots as Slot instances
     self.slots = {}
-    local slotIndex = 1
-    -- Hotbar slots (if any)
-    for i = 1, self.hotbarSize do
-        self.slots[slotIndex] = Slot:new({ row = 0, col = i - 1, isHotbar = true })
-        slotIndex = slotIndex + 1
-    end
-    -- Grid slots
-    for row = 0, self.rows - 1 do
-        for col = 0, self.cols - 1 do
-            self.slots[slotIndex] = Slot:new({ row = row, col = col })
-            slotIndex = slotIndex + 1
-        end
+    for i = 1, self.totalSlots do
+        self.slots[i] = nil
     end
 
     return self
@@ -133,15 +48,17 @@ function Inventory:update()
 end
 
 function Inventory:draw(x, y)
-    local g = love.graphics
+    local mx, my = love.mouse.getPosition()
+
     local invScale = 1.5 * scale * self.scaleMultiplier
     local slotSize = 32 * invScale
     local paddingX = 10 * invScale
     local paddingY = 10 * invScale
-    local invW = self.cols * (slotSize + paddingX)
-    local invH = self.rows * (slotSize + paddingY)
+    local invW = self.cols * (slotSize + paddingX) -- Calculate width properly (slots + paddings between)
+    local invH = self.rows * (slotSize + paddingY) -- Same for height
 
-    -- Default/centered position logic
+    -- Default to centered position if x or y not provided
+
     if self.type == "player" then
         x = screenW / 2 - invW / 2 - paddingX / 2
         for i, inv in pairs(inventories) do
@@ -155,18 +72,20 @@ function Inventory:draw(x, y)
     end
 
     if self.type == "player" then
-        y = map1.height / 2 - invH / 2 + 15 * invScale
+        y = screenH / 2 - invH / 2 + 15 * invScale
     else
-        y = map1.height / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
+        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
     end
 
-    -- Draw background
+
+    -- Draw background rectangle
     g.setColor(mainGrey)
     g.setLineWidth(thickLine)
-    g.rectangle("line", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
+    g.rectangle("line", x, y, invW + paddingX, invH + paddingY, 8 * invScale) -- Adjusted for outer padding
 
     g.setColor(transparentGrey)
     g.rectangle("fill", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
+
     g.setLineWidth(mediumLine)
 
     local slotsPerRow = self.cols
@@ -215,12 +134,13 @@ end
 function Inventory:drawHotbar()
     if not self.hasHotbar then return end
 
-    local g = love.graphics
+    local mx, my = love.mouse.getPosition() -- For hotspot checking in hotbar
+
     local hotbarScale = 1.3 * scale * self.scaleMultiplier
     local slotSize = 32 * hotbarScale
     local padding = 16 * hotbarScale
     local hotbarW = (slotSize + padding) * self.hotbarSize - padding
-    local hotbarH = slotSize + padding
+    local hotbarH = slotSize + padding -- Single row
 
     local hotbarX = screenW / 2 - hotbarW / 2 - padding / 2
     local hotbarY = screenH - hotbarH - 15 * hotbarScale
@@ -232,6 +152,7 @@ function Inventory:drawHotbar()
 
     g.setColor(transparentGrey)
     g.rectangle("fill", hotbarX, hotbarY, hotbarW + padding, hotbarH, 8 * hotbarScale)
+
     g.setLineWidth(mediumLine)
 
     local centerOffset = math.ceil(self.cols / 2)
@@ -265,6 +186,8 @@ function Inventory:drawHotbar()
             g.draw(item.sprite, sx, sy, 0, hotbarScale, hotbarScale, 0, 0, 0, 0)
         end
     end
+
+    g.setColor(white)
 end
 
 function Inventory:leftClick()

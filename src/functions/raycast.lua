@@ -5,7 +5,7 @@ Raycast.testDuration = 100
 Raycast.defRayAmount = 64
 
 -- Constructor
-function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit)
+function Raycast:new(source, angle, radius, dVec, duration, rayAmount)
     if not source.body then return nil end
 
     local len = math.sqrt(dVec.x * dVec.x + dVec.y * dVec.y)
@@ -34,9 +34,7 @@ function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit)
     obj.totalSteps    = steps
     obj.currentStep   = 0
 
-    obj.onHit         = onHit
     obj.hits          = {}
-    obj.hitSet        = {}
     obj.active        = true
 
     return obj
@@ -56,25 +54,10 @@ function Raycast:update(dt)
         local ex, ey = self.sx + dx * self.radius, self.sy + dy * self.radius
 
         world:rayCast(self.sx, self.sy, ex, ey, function(fix, x, y, xn, yn, fraction)
-            local hit = {
-                fixture = fix,
-                data = fix:getUserData(),
-                x = x,
-                y = y,
-                rl = self.currentStep / self.totalSteps, -- relative to center ray, greater than .5 is to the right of center
-                dx = x - self.sx,
-                dy = y - self.sy,
-                nx = xn,
-                ny = yn,
-                fraction = fraction
-            }
+            table.insert(self.hits, { fixture = fix, x = x, y = y, nx = xn, ny = yn, fraction = fraction })
 
-            local id = fix -- or fix:getUserData() if unique
-            if not self.hitSet[id] then
-                self.hitSet[id] = true
-                table.insert(self.hits, hit)
-                if self.onHit then self.onHit(hit) end
-            end
+            -- Change what is saved in .hits
+
             return 1
         end)
     else
@@ -92,25 +75,9 @@ function Raycast:update(dt)
             local ex, ey = self.sx + dx * self.radius, self.sy + dy * self.radius
 
             world:rayCast(self.sx, self.sy, ex, ey, function(fix, x, y, xn, yn, fraction)
-                local hit = {
-                    fixture = fix,
-                    data = fix:getUserData(),
-                    x = x,
-                    y = y,
-                    rl = self.currentStep / self.totalSteps, -- relative to center ray, greater than .5 is to the right of center
-                    dx = x - self.sx,
-                    dy = y - self.sy,
-                    nx = xn,
-                    ny = yn,
-                    fraction = fraction
-                }
+                table.insert(self.hits, { fixture = fix, x = x, y = y, nx = xn, ny = yn, fraction = fraction })
 
-                local id = fix -- or fix:getUserData() if unique
-                if not self.hitSet[id] then
-                    self.hitSet[id] = true
-                    table.insert(self.hits, hit)
-                    if self.onHit then self.onHit(hit) end
-                end
+                -- Change what is saved in .hits
 
                 return 1
             end)
@@ -141,7 +108,7 @@ end
 
 -----------------------------
 
-function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
+function Raycast:raycast(angle, radius, dVec, duration, rayAmount)
     local sx, sy = self.body:getPosition()
     local mx, my = cam:mousePosition()
 
@@ -152,7 +119,7 @@ function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
     dVec         = dVec or { x = mx - sx, y = my - sy }
 
     if not self.raycaster then
-        self.raycaster = Raycast:new(self, angle, radius, dVec, duration, rayAmount, onHit)
+        self.raycaster = Raycast:new(self, angle, radius, dVec, duration, rayAmount)
         if self.raycaster then
             table.insert(Raycast.list, self.raycaster)
         end
@@ -184,9 +151,7 @@ function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
         rc.currentStep    = 0
 
         rc.elapsed        = 0
-        rc.onHit          = onHit
         rc.hits           = {}
-        rc.hitSet         = {}
         rc.active         = true
 
         table.insert(Raycast.list, rc)
@@ -210,10 +175,6 @@ function Raycast.drawRaycasters()
     for _, rc in ipairs(Raycast.list) do
         rc:draw()
     end
-end
-
-function Raycast:getHits() -- Use to retrive information on all hits in a scan instead of just executing the onHit function
-    return self.hits
 end
 
 return Raycast

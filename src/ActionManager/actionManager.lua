@@ -21,6 +21,7 @@ function ActionManager:update(dt)
     end
 
     if self.currentAction then
+        gamestate = 1.5
         self.timer = self.timer - dt
         if self.timer <= 0 then
             if self.currentAction.finish then
@@ -39,7 +40,6 @@ end
 function ActionManager:start(action)
     self.currentAction = action
     self.timer = action.duration
-    gamestate = 1.5
     if action.start then
         action.start(self.owner)
     end

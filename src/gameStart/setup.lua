@@ -40,21 +40,8 @@ function setup()
 
     pi = math.pi
 
-    -----------------------------------------------------
-
-    Raycast = require("src.functions.raycast")
-    Pathfinder = require("src.entities.pathfinder.pathfinder")
-    StateMachine = require("src.entities.stateMachine")
-
-    ActionManager = require("src.ActionManager.actionManager")
-    Actions = require("src.ActionManager.Actions")
-
-    Movement = require("src.entities.movement")
-    Animation = require("src.entities.animation")
-
     -------------------------------------------------------
     require("src.player")
-    Testmob = require("src.entities.mobs.testmob")
 
     require("src.objects.trees")
 
@@ -77,6 +64,12 @@ function setup()
 
     require("src.UI")
     require("src.inventory")
+
+    Raycast = require("src.functions.raycast")
+    Pathfinder = require("src.entities.pathfinder.pathfinder")
+    StateMachine = require("src.entities.stateMachine")
+
+    Testmob = require("src.entities.mob.testmob")
 
     require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")

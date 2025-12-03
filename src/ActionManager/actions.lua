@@ -14,15 +14,11 @@ Actions.playerAttack = {
     duration = 0.5,
     start = function(owner)
         owner.state = "attacking"
-        owner:raycast(math.pi / 8, 100, nil, 2, 32, function(hit)
-            local data = hit.data
-            if data and data.type == "TESTMOB" then
-                Player.health = Player.health - 1 --Apply to player to visualise/test
-            end
-        end)
+        -- set up attack hitbox, animation, etc.
     end,
     finish = function(owner)
         owner.state = "idle"
+        -- clean up attack hitbox, reset animation, etc.
     end
 }
 

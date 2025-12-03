@@ -30,12 +30,10 @@ function Pathfinder:draw()
 end
 
 -- Pathfinding entry point
+function Pathfinder:pathfind(target)
+    self.oldTarget = target or { x = self.x, y = self.y }
 
--- Use LOS or A* ?
--- Change return values of raycast?
-
-function Pathfinder:pathfind()
-
+    return self.newTarget
 end
 
 function Pathfinder.drawPathfinders()

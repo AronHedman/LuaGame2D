@@ -41,10 +41,8 @@ function Testmob:new(x, y)
     obj.animation = obj.animations.down
 
     -- AI state
-    obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing statemachine), 3, dead/schedueld for removal
-
     obj.behaviours = { "neutral", "aggressive", "skittish" }
-    obj.activity = { "wandering", "targeting", "fleeing" } --Predefined states, more can be applied by the actionManager
+    obj.states = { "wandering", "targeting", "fleeing" } --Predefined states, more can be applied by the actionManager
     obj.target = { x = obj.x, y = obj.y }
 
     obj.alive = true
