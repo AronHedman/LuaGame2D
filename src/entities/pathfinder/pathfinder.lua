@@ -22,20 +22,31 @@ function Pathfinder:update(dt)
     -- Can be removed if every self.x is changed to self.source.x. This will make more code but fewer update calls so maybe better performance.
     self.x = self.source.x
     self.y = self.source.y
+
+    --if at waypoint then pop waypoint and let next wawypoint be targer
 end
+
+------------------------
+--Pathfinding functions
+function Pathfinder:hasLOS(goalX, goalY)
+
+end
+
+function Pathfinder:setTarget(goalX, goalY)
+    --sets target, then calls a hasLOS()...
+    --if yes then set direct waypoint
+    --if no then call findPath()
+end
+
+function Pathfinder:findPath(goalX, goalY)
+    --return a array of waypoints or nil
+end
+
+------------------------
 
 -- Draw (debug only)
 function Pathfinder:draw()
-    -- Add visualisation
-end
-
--- Pathfinding entry point
-
--- Use LOS or A* ?
--- Change return values of raycast?
-
-function Pathfinder:pathfind()
-
+    -- Add visualisation / debug
 end
 
 function Pathfinder.drawPathfinders()

@@ -41,15 +41,24 @@ function Testmob:new(x, y)
     obj.animation = obj.animations.down
 
     -- AI state
+    obj.stateMachine = StateMachine:new(obj)
+    obj.pathfinder = Pathfinder:new(obj)
+    obj.actionManager = ActionManager:new(obj)
+
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing statemachine), 3, dead/schedueld for removal
 
     obj.behaviours = { "neutral", "aggressive", "skittish" }
     obj.activity = { "wandering", "targeting", "fleeing" } --Predefined states, more can be applied by the actionManager
-    obj.target = { x = obj.x, y = obj.y }
+    obj.goalX = nil
+    obj.goalY = nil
+    obj.targetMob = nil
+    obj.currentPath = nil
+    obj.repathCooldown = 0
+
 
     obj.alive = true
-    obj.stateMachine = StateMachine:new(obj)
-    obj.pathfinder = nil
+
+
 
     return obj
 end
@@ -59,12 +68,13 @@ function Testmob:update(dt)
     self.x = self.body:getX()
     self.y = self.body:getY()
 
-    -- animations
-    self.animation:update(dt)
-
     -- run 'AI'
     self.pathfinder:update(dt)
+    self.actionManager:update(dt)
     self.stateMachine:update(dt)
+
+    -- animations
+    self.animation:update(dt)
 end
 
 function Testmob:draw()
@@ -81,8 +91,6 @@ end
 -- Entry point for Testmob
 function Testmob:initTestmob(x, y)
     local mob = Testmob:new(x, y)
-
-    mob.pathfinder = Pathfinder:new(mob)
 
     table.insert(Testmob.list, mob)
     return mob

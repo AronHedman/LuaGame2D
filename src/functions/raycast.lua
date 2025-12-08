@@ -193,6 +193,10 @@ function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
     end
 end
 
+function Raycast:hasLOS(goalX, goalY) --Add parameter for ignoring certein stuff
+
+end
+
 -----------------------------
 
 function Raycast.updateRaycasters(dt)

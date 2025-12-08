@@ -13,10 +13,9 @@ function StateMachine:new(owner)
     obj.currentBehaviour = obj.behaviours[1] -- default to first behaviour
 
     obj.target = nil                         -- save target
+
     return obj
 end
-
--- Utilise the pathfinder for more of the workload.
 
 function StateMachine:update(dt)
 
