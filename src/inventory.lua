@@ -74,7 +74,7 @@ function Inventory:draw(x, y)
     if self.type == "player" then
         y = screenH / 2 - invH / 2 + 15 * invScale
     else
-        y = screenH / 2 - invH / 2 - 3 * (slotSize + paddingY) + 15 * invScale
+        y = screenH / 2 - invH / 2 + (15 + ((slotSize + paddingY) / 2) * (5 - self.rows)) * invScale --not working...
     end
 
 
