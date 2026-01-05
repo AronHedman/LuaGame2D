@@ -28,6 +28,11 @@ function setup()
     cam = camera()
 
     -----------------------------------------------------
+
+    astar = require("libraries.astar")
+    updateWalkableNodes() --Temp, move to maploader later.
+
+    -----------------------------------------------------
     white = { 1, 1, 1, 1 }
     black = { 0, 0, 0, 1 }
     mainGrey = { 0.5, 0.5, 0.45, 1 }
