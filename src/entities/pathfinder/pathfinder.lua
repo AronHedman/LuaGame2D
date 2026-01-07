@@ -6,12 +6,14 @@ function Pathfinder:new(source)
     local obj = setmetatable({}, Pathfinder)
 
     obj.source = source
-    obj.x = source.x
-    obj.y = source.y
+    obj.px = source.body.x --pixel coordinates
+    obj.py = source.body.y
 
-    obj.oldTarget = nil
-    obj.newTarget = nil
-    obj.active = true
+    obj.x, obj.y = pixelToTile(source.body:getPosition()) --tile coordinates
+
+    obj.path = nil
+
+    obj.repathCooldown = 0
 
     table.insert(Pathfinder.list, obj)
     return obj
@@ -20,26 +22,44 @@ end
 function Pathfinder:update(dt)
     -- keep internal position synced with source
     -- Can be removed if every self.x is changed to self.source.x. This will make more code but fewer update calls so maybe better performance.
-    self.x = self.source.x
-    self.y = self.source.y
+    self.px = self.source.x
+    self.py = self.source.y
 
-    --if at waypoint then pop waypoint and let next wawypoint be targer
+    if self.path ~= nil then
+        self:progressPath()
+        self.repathCooldown = self.repathCooldown - dt
+    end
 end
 
 ------------------------
 --Pathfinding functions
+
+function Pathfinder:progressPath()
+    if self.path ~= nil and #self.path > 0 then
+        if self.x == self.path[1].x and self.y == self.path[1].y then
+            table.remove(self.path, 1)
+            self.targetX, self.targetY = self.path[1].x, self.path[1].y
+
+            -- add movement to next targets, maybe use calculateVec() in functions.lua
+        end
+    else
+        self.path = nil
+    end
+end
+
 function Pathfinder:hasLOS(goalX, goalY)
 
 end
 
-function Pathfinder:setTarget(goalX, goalY)
-    --sets target, then calls a hasLOS()...
-    --if yes then set direct waypoint
-    --if no then call findPath()
-end
+function Pathfinder:roam()
+    if self.activity == "wandering" and self.path == nil and self.repathCooldown <= 0 then
+        local roamX = math.random(-5, 5)
+        local roamY = math.random(-5, 5)
 
-function Pathfinder:findPath(goalX, goalY)
-    --return a array of waypoints or nil
+        local target = AStar:path({ self.x, self.y }, { self.x + roamX, self.y + roamY })
+        self.path = target
+        self.repathCooldown = 4 --seconds
+    end
 end
 
 ------------------------

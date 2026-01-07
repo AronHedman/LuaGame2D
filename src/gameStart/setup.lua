@@ -5,6 +5,8 @@ function setup()
 
     require("src.globals")
 
+    math.randomseed(love.timer.getTime())
+
     p.setMeter(64)                 --Set to one tile
     world = p.newWorld(0, 0, true) --No gravity no sleeping
 

@@ -33,7 +33,6 @@ end
 
 function Item.iid() --Generates a unique instance ID in hexadecimal (Source: Lua - Lume Library, slightly modified with a randomseed)
   local fn = function(x)
-    math.randomseed(love.timer.getTime())
     local r = math.random(16) - 1
     r = (x == "x") and (r + 1) or (r % 4) + 9
     return ("0123456789abcdef"):sub(r, r)

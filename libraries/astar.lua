@@ -26,7 +26,6 @@
 -------------------------------------
 ---Modifications made by Aron
 -------------------------------------
--- astar.lua
 
 local AStar = {}
 AStar.__index = AStar

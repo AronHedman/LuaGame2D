@@ -1,6 +1,6 @@
 function love.load()
     baseW, baseH = 1024, 576 --16 x 9 tiles of 64x64
-    --cW, cH = love.graphics.getDimensions()
+    --cW, cH = love.graphics.getDimensions()  (ta bort?)
     scale = 1
 
     require("src.load")

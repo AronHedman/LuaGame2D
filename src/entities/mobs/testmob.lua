@@ -8,6 +8,8 @@ function Testmob:new(x, y)
     obj.x = x
     obj.y = y
 
+    obj.vec = nil
+
     obj.scale = 5
     obj.sWidth = 12
     obj.sHeight = 18
@@ -46,9 +48,10 @@ function Testmob:new(x, y)
     obj.actionManager = ActionManager:new(obj)
 
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing statemachine), 3, dead/schedueld for removal
+    --state needs reworking, currently a mix of different systems
 
-    obj.behaviours = { "neutral", "aggressive", "skittish" }
-    obj.activity = { "wandering", "targeting", "fleeing" } --Predefined states, more can be applied by the actionManager
+    obj.behaviours = "neutral" --"aggressive", "skittish"
+    obj.activity = "wandering" --"targeting", "fleeing"       Predefined states, more can be applied by the actionManager
     obj.goalX = nil
     obj.goalY = nil
     obj.targetMob = nil

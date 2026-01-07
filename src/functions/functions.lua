@@ -13,3 +13,14 @@ function getTileCoords(entity)
         y = math.floor(entity.body:getY() / map1.tileheight)
     }
 end
+
+function pixelToTile(x, y)
+    return {
+        x = math.floor(x / map1.tilewidth),
+        y = math.floor(y / map1.tileheight)
+    }
+end
+
+--function calculateVec(x1, y1, x2, y2)
+--local angle = math.atan((y2 - y1) / (x2 - x1))
+--end
