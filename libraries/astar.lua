@@ -27,14 +27,16 @@
 ---Modifications made by Aron
 -------------------------------------
 
-local walkableNodesGID = {}                        --11, list of walkable tile GIDs
+local walkableNodesGID = { --11, list of walkable tile GIDs
+    1, 2, 3, 10, 11, 12, 14, 19, 20, 21, 23
+}
 
-nodeTable = {}                                     -- O(n), all nodes, for looping through
-nodeByXY = {}                                      -- O(1), looking up specific coordinates, [y][x], shared references to nodeTable so only one needs to be updated to affect both.
+nodeTable = {}                    -- O(n), all nodes, for looping through
+nodeByXY = {}                     -- O(1), looking up specific coordinates, [y][x], shared references to nodeTable so only one needs to be updated to affect both.
 
-local function gidIsWalkable(gid)                  --gid = global index (här, gid i STI är något annat, kanske Graphical Index för att veta vilken tile image den läser från, osäker...)
+local function gidIsWalkable(gid) --gid = global index (här, gid i STI är något annat, kanske Graphical Index för att veta vilken tile image den läser från, osäker...)
     if not gid or gid == 0 then return false end
-    if #walkableNodesGID == 0 then return true end --temp to enable all tiles
+    --if #walkableNodesGID == 0 then return true end --temp to enable all tiles
     for _, id in ipairs(walkableNodesGID) do
         if gid == id then return true end
     end
@@ -42,26 +44,32 @@ local function gidIsWalkable(gid)                  --gid = global index (här, g
 end
 
 
-local function objectOnTile(tile)
+local function objectOnTile(tile, layer, tx, ty)
     if not tile then return false end
+
     local objects = map1.objects
 
-    --Simple AABB collision detection
-    local tileX1 = tile.x
-    local tileX2 = tile.x + tile.width
-    local tileY1 = tile.y
-    local tileY2 = tile.y + tile.height
+    -- Get tile pixel position from STI
+    local tileX, tileY = map1:getLayerTilePosition(layer, tile, tx, ty)
+    local tileX1 = tileX
+    local tileY1 = tileY
+    local tileX2 = tileX + tile.width
+    local tileY2 = tileY + tile.height
 
-    for _, obj in ipairs(objects) do
-        if obj.properties and obj.properties.collidable == true then
-            local objX1 = obj.x
-            local objX2 = obj.x + (obj.width or 0)
-            local objY1 = obj.y
-            local objY2 = obj.y + (obj.height or 0)
+    for _, obj in pairs(objects) do
+        local objX1 = obj.x
+        local objY1 = obj.y
+        local objX2 = obj.x + (obj.width or 0)
+        local objY2 = obj.y + (obj.height or 0)
 
-            if not (tileX2 <= objX1 or tileX1 >= objX2 or tileY2 <= objY1 or tileY1 >= objY2) then
-                return false
-            end
+        -- Simple AABB collision detection
+        if not (
+                tileX2 <= objX1 or
+                tileX1 >= objX2 or
+                tileY2 <= objY1 or
+                tileY1 >= objY2
+            ) then
+            return false
         end
     end
 
@@ -78,21 +86,22 @@ function updateWalkableNodes()
     for y = 1, layer.height do
         nodeByXY[y] = nodeByXY[y] or {}
         for x = 1, layer.width do
-            local tile     = layer.data[y][x] or nil
-            local gid      = tile and tile.gid or 0
-            --GID is shared across tiles with the same tile sprite, not unique per tile
+            local tile = layer.data[y][x]      --or nil
+            local gid = tile and tile.gid or 0 --STI will default to 0 if no tile sprite as well
+            --GID is shared across tiles with the same tile sprite, not unique per tile instance.
             -- "tile and"-check due to the "or nil" on line above, otherwise it throws annoying error that doesnt really afect anything...
 
             local walkable = false
-            if tile and tile.properties and tile.properties.walkable ~= nil then
-                walkable = tile.properties.walkable == true --if tile already has walkable propert
+            if tile and tile.properties.walkable ~= nil then
+                walkable = tile.properties.walkable --if tile already has walkable property
             else
-                walkable = gidIsWalkable(gid)               --else check if walkable based on gid and if colliding with objects
-                -- walkable = objectOnTile(tile)
+                walkable = gidIsWalkable(gid)
+                walkable = walkable and objectOnTile(tile, layer, x, y)
+                --else check if walkable based on gid and if colliding with objects
             end
 
-            local node = {
-                x = x,
+            local node = { --Create a node to use for pathfinding
+                x = x,     --tile coordinates
                 y = y,
                 gid = gid,
                 walkable = walkable

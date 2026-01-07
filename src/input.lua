@@ -6,6 +6,9 @@ function love.keypressed(key)
     if key == "tab" then
         debugMode = not debugMode
     end
+    if key == "lctrl" and debugMode then
+        moreDebug = not moreDebug
+    end
 
     if gamestate == 1.5 then return end
 

@@ -29,6 +29,10 @@ function setup()
 
     -----------------------------------------------------
 
+    require("src.temps.tempFunctions") -- loads the serialization functions
+
+    -----------------------------------------------------
+
     astar = require("libraries.astar")
     updateWalkableNodes() --Temp, move to maploader later.
 
@@ -83,7 +87,6 @@ function setup()
     require("src.UI")
     require("src.inventory")
 
-    require("src.temps.tempFunctions") -- loads the serialization functions
     require("src.temps.tempLoad")
     require("src.temps.tempUpdate")
     require("src.temps.tempDraw")

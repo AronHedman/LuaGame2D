@@ -2,9 +2,6 @@ function draw()
     cam:attach() --Attach the camera to the screen
     map1:drawLayer(map1.layers["Ground"])
 
-    --temp
-    drawWalkableNodes()
-
     for i, obj in ipairs(drawables) do
         obj:draw()
     end

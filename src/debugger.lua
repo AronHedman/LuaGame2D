@@ -31,6 +31,14 @@ function drawDebugPre()
     end
 
     g.setColor(1, 1, 1)
+
+    if moreDebug then
+        drawMoreDebug()
+    end
+end
+
+function drawMoreDebug()
+    drawWalkableNodes()
 end
 
 function drawDebugPost()
