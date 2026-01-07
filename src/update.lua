@@ -1,4 +1,8 @@
 function update(dt)
+    --Running Lovebird for debugging, to view go to http://127.0.0.1:8000
+    require("libraries.lovebird").update()
+
+
     for _, inv in pairs(inventories) do
         if inv.isActive then
             gamestate = 2
