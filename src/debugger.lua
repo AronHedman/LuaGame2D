@@ -38,7 +38,7 @@ function drawDebugPre()
 end
 
 function drawMoreDebug()
-    drawWalkableNodes()
+    AStar:drawWalkableNodes()
 end
 
 function drawDebugPost()

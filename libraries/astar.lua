@@ -26,35 +26,43 @@
 -------------------------------------
 ---Modifications made by Aron
 -------------------------------------
+-- astar.lua
 
-local walkableNodesGID = { --11, list of walkable tile GIDs
-    1, 2, 3, 10, 11, 12, 14, 19, 20, 21, 23
-}
+local AStar = {}
+AStar.__index = AStar
 
-nodeTable = {}                    -- O(n), all nodes, for looping through
-nodeByXY = {}                     -- O(1), looking up specific coordinates, [y][x], shared references to nodeTable so only one needs to be updated to affect both.
+local INF = 1 / 0
 
-local function gidIsWalkable(gid) --gid = global index (här, gid i STI är något annat, kanske Graphical Index för att veta vilken tile image den läser från, osäker...)
+-- Constructor
+function AStar.new(map)
+    local self = setmetatable({}, AStar)
+    self.map = map            -- reference to STI map
+    self.walkableNodesGID = { --11, list of walkable tile GIDs
+        1, 2, 3, 10, 11, 12, 14, 19, 20, 21, 23
+    }
+    self.nodeTable = {}
+    self.nodeByXY = {}
+    self.cachedPaths = {}
+
+    self:updateNodes()
+
+    return self
+end
+
+function AStar:gidIsWalkable(gid)
     if not gid or gid == 0 then return false end
-    --if #walkableNodesGID == 0 then return true end --temp to enable all tiles
-    for _, id in ipairs(walkableNodesGID) do
+    for _, id in ipairs(self.walkableNodesGID) do
         if gid == id then return true end
     end
     return false
 end
 
-
-local function objectOnTile(tile, layer, tx, ty)
+function AStar:objectOnTile(tile, layer, tx, ty)
     if not tile then return false end
-
-    local objects = map1.objects
-
-    -- Get tile pixel position from STI
-    local tileX, tileY = map1:getLayerTilePosition(layer, tile, tx, ty)
-    local tileX1 = tileX
-    local tileY1 = tileY
-    local tileX2 = tileX + tile.width
-    local tileY2 = tileY + tile.height
+    local objects = self.map.objects or {}
+    local tileX, tileY = self.map:getLayerTilePosition(layer, tile, tx, ty)
+    local tileX1, tileY1 = tileX, tileY
+    local tileX2, tileY2 = tileX + tile.width, tileY + tile.height
 
     for _, obj in pairs(objects) do
         local objX1 = obj.x
@@ -62,64 +70,52 @@ local function objectOnTile(tile, layer, tx, ty)
         local objX2 = obj.x + (obj.width or 0)
         local objY2 = obj.y + (obj.height or 0)
 
-        -- Simple AABB collision detection
-        if not (
-                tileX2 <= objX1 or
+        if not (tileX2 <= objX1 or
                 tileX1 >= objX2 or
                 tileY2 <= objY1 or
-                tileY1 >= objY2
-            ) then
+                tileY1 >= objY2) then
             return false
         end
     end
-
     return true
 end
 
-function updateWalkableNodes()
-    local layer = map1.layers["Ground"]
+function AStar:updateNodes()
+    local layer = self.map.layers["Ground"]
     if not layer or layer.type ~= "tilelayer" then return end
 
-    nodeTable = {} --empties the table
-    nodeByXY = {}
+    self.nodeTable = {}
+    self.nodeByXY = {}
 
     for y = 1, layer.height do
-        nodeByXY[y] = nodeByXY[y] or {}
+        self.nodeByXY[y] = self.nodeByXY[y] or {}
         for x = 1, layer.width do
-            local tile = layer.data[y][x]      --or nil
-            local gid = tile and tile.gid or 0 --STI will default to 0 if no tile sprite as well
-            --GID is shared across tiles with the same tile sprite, not unique per tile instance.
-            -- "tile and"-check due to the "or nil" on line above, otherwise it throws annoying error that doesnt really afect anything...
-
+            local tile = layer.data[y][x]
+            local gid = tile and tile.gid or 0
             local walkable = false
-            if tile and tile.properties.walkable ~= nil then
-                walkable = tile.properties.walkable --if tile already has walkable property
+            if tile and tile.properties and tile.properties.walkable ~= nil then
+                walkable = tile.properties.walkable
             else
-                walkable = gidIsWalkable(gid)
-                walkable = walkable and objectOnTile(tile, layer, x, y)
-                --else check if walkable based on gid and if colliding with objects
+                walkable = self:gidIsWalkable(gid) and self:objectOnTile(tile, layer, x, y)
             end
 
-            local node = { --Create a node to use for pathfinding
-                x = x,     --tile coordinates
-                y = y,
-                gid = gid,
-                walkable = walkable
-            }
-
-            table.insert(nodeTable, node)
-            nodeByXY[y][x] = node
+            local node = { x = x, y = y, gid = gid, walkable = walkable }
+            table.insert(self.nodeTable, node)
+            self.nodeByXY[y][x] = node
         end
     end
+
+    -- Reset cached paths when tiles change
+    self.cachedPaths = {}
 end
 
-function drawWalkableNodes()
-    if not nodeTable then return end
-    local tw, th = map1.tilewidth, map1.tileheight
-    local layer = map1.layers["Ground"]
+function AStar:drawWalkableNodes()
+    if not self.nodeTable then return end
+    local tw, th = self.map.tilewidth, self.map.tileheight
+    local layer = self.map.layers["Ground"]
     local r = math.max(2, math.floor(math.min(tw, th) * 0.1))
 
-    for _, n in ipairs(nodeTable) do
+    for _, n in ipairs(self.nodeTable) do
         if n.walkable then love.graphics.setColor(1, 1, 1, 1) else love.graphics.setColor(1, 0, 0, 1) end
         local cx = (n.x - 1) * tw + layer.x + tw / 2
         local cy = (n.y - 1) * th + layer.y + th / 2
@@ -128,103 +124,106 @@ function drawWalkableNodes()
     love.graphics.setColor(1, 1, 1, 1)
 end
 
--------------------------------------
-
---module("astar", package.seeall) --dunno what this does, it was in the original
-
-----------------------------------------------------------------
--- local variables
-----------------------------------------------------------------
-
-local INF = 1 / 0
-local cachedPaths = nil
-
-----------------------------------------------------------------
--- local functions
-----------------------------------------------------------------
-
-function dist(x1, y1, x2, y2)
-    return math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
+function AStar:heuristic_cost_estimate(nodeA, nodeB)
+    local dx = math.abs(nodeA.x - nodeB.x)
+    local dy = math.abs(nodeA.y - nodeB.y)
+    return 10 * (dx + dy) + (14 - 20) * math.min(dx, dy)
 end
 
-function dist_between(nodeA, nodeB)
-    return dist(nodeA.x, nodeA.y, nodeB.x, nodeB.y)
+local function dist(nodeA, nodeB)
+    local dx = nodeA.x - nodeB.x
+    local dy = nodeA.y - nodeB.y
+    return math.sqrt(dx * dx + dy * dy)
 end
 
-function heuristic_cost_estimate(nodeA, nodeB)
-    return dist(nodeA.x, nodeA.y, nodeB.x, nodeB.y)
-end
-
-function is_valid_node(node, neighbor)
-    return true
-end
-
-function lowest_f_score(set, f_score)
-    local lowest, bestNode = INF, nil
-    for _, node in ipairs(set) do
-        local score = f_score[node]
-        if score < lowest then
-            lowest, bestNode = score, node
-        end
-    end
-    return bestNode
-end
-
-function neighbor_nodes(theNode, nodes)
+-- Neighbor nodes (uses self.nodeByXY)
+function AStar:neighbor_nodes(node)
     local neighbors = {}
-    for _, node in ipairs(nodes) do
-        if theNode ~= node and is_valid_node(theNode, node) then
-            table.insert(neighbors, node)
+    local x, y = node.x, node.y
+    local function add(nx, ny, cost)
+        local n = self.nodeByXY[ny][nx]
+        if n and n.walkable then
+            table.insert(neighbors, { node = n, cost = cost })
         end
     end
+
+    add(x + 1, y, 10) -- node X, y, movement cost
+    add(x - 1, y, 10)
+    add(x, y + 1, 10)
+    add(x, y - 1, 10)
+
+    -- cost 14, roughly sqrt(2)*10
+
+    -- diagonal checks to avoid cutting corners, checks if both adjacent sides are walkable
+    if self.nodeByXY[y] and self.nodeByXY[y][x + 1] and self.nodeByXY[y][x + 1].walkable
+        and self.nodeByXY[y + 1] and self.nodeByXY[y + 1][x] and self.nodeByXY[y + 1][x].walkable then
+        add(x + 1, y + 1, 14)
+    end
+    if self.nodeByXY[y] and self.nodeByXY[y][x - 1] and self.nodeByXY[y][x - 1].walkable
+        and self.nodeByXY[y + 1] and self.nodeByXY[y + 1][x] and self.nodeByXY[y + 1][x].walkable then
+        add(x - 1, y + 1, 14)
+    end
+    if self.nodeByXY[y] and self.nodeByXY[y][x + 1] and self.nodeByXY[y][x + 1].walkable
+        and self.nodeByXY[y - 1] and self.nodeByXY[y - 1][x] and self.nodeByXY[y - 1][x].walkable then
+        add(x + 1, y - 1, 14)
+    end
+    if self.nodeByXY[y] and self.nodeByXY[y][x - 1] and self.nodeByXY[y][x - 1].walkable
+        and self.nodeByXY[y - 1] and self.nodeByXY[y - 1][x] and self.nodeByXY[y - 1][x].walkable then
+        add(x - 1, y - 1, 14)
+    end
+
     return neighbors
 end
 
-function not_in(set, theNode)
-    for _, node in ipairs(set) do
-        if node == theNode then return false end
-    end
+-------------------------------------------------------------------------------------
+
+local function not_in(set, theNode)
+    for _, v in ipairs(set) do if v == theNode then return false end end
     return true
 end
 
-function remove_node(set, theNode)
-    for i, node in ipairs(set) do
-        if node == theNode then
-            set[i] = set[#set]
-            set[#set] = nil
-            break
+local function remove_node(set, theNode)
+    for i, n in ipairs(set) do
+        if n == theNode then
+            set[i] = set[#set]; set[#set] = nil; return
         end
     end
 end
 
-function unwind_path(flat_path, map, current_node)
-    if map[current_node] then
-        table.insert(flat_path, 1, map[current_node])
-        return unwind_path(flat_path, map, map[current_node])
-    else
-        return flat_path
+local function lowest_f_score(set, f_score)
+    local lowest, best = INF, nil
+    for _, node in ipairs(set) do
+        local s = f_score[node] or INF
+        if s < lowest then lowest, best = s, node end
     end
+    return best
 end
 
-----------------------------------------------------------------
--- pathfinding functions
-----------------------------------------------------------------
+local function unwind_path(came_from, current)
+    local path = {}
+    while current and came_from[current] do
+        table.insert(path, 1, came_from[current])
+        current = came_from[current]
+    end
+    return path
+end
 
-function a_star(start, goal, nodes, valid_node_func)
+-------------------------------------------------------------------------------------
+
+function AStar:a_star(start, goal)
+    if not start or not goal then return nil end
     local closedset = {}
     local openset = { start }
     local came_from = {}
-
-    if valid_node_func then is_valid_node = valid_node_func end
-
     local g_score, f_score = {}, {}
+
     g_score[start] = 0
-    f_score[start] = g_score[start] + heuristic_cost_estimate(start, goal)
+    f_score[start] = self:heuristic_cost_estimate(start, goal)
 
     while #openset > 0 do
         local current = lowest_f_score(openset, f_score)
         if current == goal then
-            local path = unwind_path({}, came_from, goal)
+            local path = unwind_path(came_from, goal)
             table.insert(path, goal)
             return path
         end
@@ -232,49 +231,45 @@ function a_star(start, goal, nodes, valid_node_func)
         remove_node(openset, current)
         table.insert(closedset, current)
 
-        local neighbors = neighbor_nodes(current, nodes)
-        for _, neighbor in ipairs(neighbors) do
+        for _, step in ipairs(self:neighbor_nodes(current)) do
+            local neighbor, cost = step.node, step.cost
             if not_in(closedset, neighbor) then
-                local tentative_g_score = g_score[current] + dist_between(current, neighbor)
-
-                if not_in(openset, neighbor) or tentative_g_score < g_score[neighbor] then
+                local tentative_g = (g_score[current] or INF) + cost
+                if not_in(openset, neighbor) or tentative_g < (g_score[neighbor] or INF) then
                     came_from[neighbor] = current
-                    g_score[neighbor] = tentative_g_score
-                    f_score[neighbor] = g_score[neighbor] + heuristic_cost_estimate(neighbor, goal)
-                    if not_in(openset, neighbor) then
-                        table.insert(openset, neighbor)
-                    end
+                    g_score[neighbor] = tentative_g
+                    f_score[neighbor] = g_score[neighbor] + self:heuristic_cost_estimate(neighbor, goal)
+                    if not_in(openset, neighbor) then table.insert(openset, neighbor) end
                 end
             end
         end
     end
-    return nil -- no valid path
+
+    return nil
 end
 
-----------------------------------------------------------------
--- exposed functions
-----------------------------------------------------------------
+-- Exposed functions
 
-function clear_cached_paths()
-    cachedPaths = nil
-end
-
-function distance(x1, y1, x2, y2)
-    return dist(x1, y1, x2, y2)
-end
-
-function path(start, goal, nodes, ignore_cache, valid_node_func)
-    if not cachedPaths then cachedPaths = {} end
-    if not cachedPaths[start] then
-        cachedPaths[start] = {}
-    elseif cachedPaths[start][goal] and not ignore_cache then
-        return cachedPaths[start][goal]
+function AStar:path(start, goal, ignoreCache)
+    if not self.cachedPaths[start] then self.cachedPaths[start] = {} end
+    if self.cachedPaths[start][goal] and not ignoreCache then
+        return self.cachedPaths[start][goal]
     end
 
-    local resPath = a_star(start, goal, nodes, valid_node_func)
-    if not cachedPaths[start][goal] and not ignore_cache then
-        cachedPaths[start][goal] = resPath
+    local res = self:a_star(start, goal)
+    if not self.cachedPaths[start][goal] then
+        self.cachedPaths[start][goal] = res
     end
-
-    return resPath
+    return res
 end
+
+function AStar:clearCache()
+    self.cachedPaths = {}
+end
+
+function AStar:invalidate() -- call when map, tiles or objects change
+    self:updateNodes()
+    self:clearCache()
+end
+
+return AStar

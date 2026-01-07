@@ -33,8 +33,8 @@ function setup()
 
     -----------------------------------------------------
 
-    astar = require("libraries.astar")
-    updateWalkableNodes() --Temp, move to maploader later.
+    AStar = require("libraries.astar")
+    AStar = AStar.new(map1) --Temp, move maploading to maploader later.
 
     -----------------------------------------------------
     white = { 1, 1, 1, 1 }
