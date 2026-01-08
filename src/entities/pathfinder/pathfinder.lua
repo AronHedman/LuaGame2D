@@ -54,10 +54,8 @@ function Pathfinder:progressPath()
         end
         if distance(self.x, self.y, self.targetX, self.targetY) < 1 then self.owner.dirX, self.owner.dirY = 0, 0 end
         -- add movement to next targets, maybe use calculateVec() in functions.lua
-        if self.owner.actionManager.currentAction == nil then
-            local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
-            self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
-        end
+        local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
+        self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
     end
 end
 
