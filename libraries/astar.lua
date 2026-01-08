@@ -129,12 +129,6 @@ function AStar:heuristic_cost_estimate(nodeA, nodeB)
     return 10 * (dx + dy) + (14 - 20) * math.min(dx, dy)
 end
 
-local function dist(nodeA, nodeB)
-    local dx = nodeA.x - nodeB.x
-    local dy = nodeA.y - nodeB.y
-    return math.sqrt(dx * dx + dy * dy)
-end
-
 -- Neighbor nodes (uses self.nodeByXY)
 function AStar:neighbor_nodes(node)
     local neighbors = {}
@@ -266,7 +260,7 @@ end
 
 function AStar:coordToNodeByXY(x, y)
     local row = self.nodeByXY[y]
-    if not row then return false end
+    if not row then return nil end
     local node = row[x]
     return node
 end

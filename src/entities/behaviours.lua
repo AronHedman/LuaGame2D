@@ -3,13 +3,15 @@ local Behaviours = {}
 Behaviours.neutral = {
     update = function(self, owner, dt)
         if owner.activity == "wandering" then
-            --print(10)
             if owner.pathfinder.path ~= nil then
-                -- print(15)
                 owner.pathfinder:progressPath()
             else
-                -- print(20)
-                owner.pathfinder:roam()
+                local rand = math.random(1, 10)
+                if rand >= 3 then
+                    owner.pathfinder:roam()
+                else
+                    owner.actionManager:addAction(Actions.idle)
+                end
             end
         end
     end

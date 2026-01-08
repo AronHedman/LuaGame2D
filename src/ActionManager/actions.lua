@@ -1,9 +1,10 @@
 local Actions = {}
 
 Actions.idle = {
-    duration = 1.0,
+    duration = 2,
     start = function(owner)
         owner.state = "idle"
+        owner.dirX, owner.dirY = 0, 0
     end,
     finish = function(owner)
         -- nothing to do
@@ -16,7 +17,7 @@ Actions.moveTowards = {
         owner.state = "moving"
 
         --calculate direction vectors, then movement.lua does the rest
-        dirX, dirY = calculateVecComponent(x1, y1, x2, y2)
+        local dirX, dirY = calculateVecComponent(x1, y1, x2, y2)
         owner.dirX = dirX
         owner.dirY = dirY
     end,

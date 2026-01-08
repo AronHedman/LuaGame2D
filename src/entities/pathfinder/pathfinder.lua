@@ -40,6 +40,7 @@ end
 --Pathfinding functions
 
 function Pathfinder:progressPath()
+    if self.path == nil then return end
     if #self.path <= 0 then
         self.path = nil
         return
@@ -49,12 +50,14 @@ function Pathfinder:progressPath()
         if self.x == self.path[1].x and self.y == self.path[1].y then
             table.remove(self.path, 1)
             if #self.path <= 0 then return end
+            self.targetX, self.targetY = self.path[1].x, self.path[1].y
         end
-
-        self.targetX, self.targetY = self.path[1].x, self.path[1].y
+        if distance(self.x, self.y, self.targetX, self.targetY) < 1 then self.owner.dirX, self.owner.dirY = 0, 0 end
         -- add movement to next targets, maybe use calculateVec() in functions.lua
-        local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
-        self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
+        if self.owner.actionManager.currentAction == nil then
+            local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
+            self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
+        end
     end
 end
 
@@ -65,15 +68,17 @@ end
 function Pathfinder:roam()
     if self.owner.activity == "wandering" and self.path == nil and self.repathCooldown <= 0 then
         self.start = AStar:coordToNodeByXY(self.x, self.y)
-        while self.target == nil or not self.target.walkable do
+        local tile = nil
+        while tile == nil or not tile.walkable do
             local roamX = math.random(-3, 3)
             local roamY = math.random(-3, 3)
-            self.target = AStar:coordToNodeByXY(self.x + roamX, self.y + roamY)
+            tile = AStar:coordToNodeByXY(self.x + roamX, self.y + roamY)
         end
 
-        if self.start and self.target then
-            self.target = AStar:path(self.start, self.target)
+        if self.start and tile then
+            self.target = AStar:path(self.start, tile)
             self.path = self.target
+            self.targetX, self.targetY = self.path[1].x, self.path[1].y
         end
 
         self.repathCooldown = 4 --seconds

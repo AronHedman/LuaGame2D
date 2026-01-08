@@ -41,7 +41,9 @@ end
 function ActionManager:start(action, args)
     self.currentAction = action
     self.timer = action.duration or 0
-    gamestate = 1.5
+    if self.owner == Player then
+        gamestate = 1.5
+    end
 
     if action.start then
         if args and #args > 0 then
