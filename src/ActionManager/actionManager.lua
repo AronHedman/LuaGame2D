@@ -33,7 +33,9 @@ end
 
 -- queue an action with separate args
 function ActionManager:addAction(action, ...)
-    table.insert(self.queue, { action = action, args = { ... } })
+    if #self.queue < 100 then --perhaps remove if problems?
+        table.insert(self.queue, { action = action, args = { ... } })
+    end
 end
 
 function ActionManager:start(action, args)

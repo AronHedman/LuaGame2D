@@ -11,7 +11,7 @@ Actions.idle = {
 }
 
 Actions.moveTowards = {
-    duration = 0.1,
+    duration = 0,
     start = function(owner, x1, y1, x2, y2)
         owner.state = "moving"
 
@@ -19,8 +19,6 @@ Actions.moveTowards = {
         dirX, dirY = calculateVecComponent(x1, y1, x2, y2)
         owner.dirX = dirX
         owner.dirY = dirY
-
-        print("Moving towards:", x2, y2) --debug
     end,
     finish = function(owner)
         owner.state = "idle"

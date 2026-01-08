@@ -62,6 +62,9 @@ function love.keypressed(key)
     if key == "m" then
         Player.actionManager:addAction(Actions.playerAttack)
     end
+    if key == "r" then
+        math.randomseed(love.timer.getTime())
+    end
 end
 
 --Mouse input

@@ -49,7 +49,8 @@ function drawDebugPost()
     g.print("FPS: " .. love.timer.getFPS(), 10, 30)
 
     g.print("Player Position: (" .. Player.body:getX() .. ", " .. Player.body:getY() .. ")", 10, 50)
-    g.print("Player tile coord: (" .. getTileCoords(Player)[1] .. ", " .. getTileCoords(Player)[2] .. ")", 10,
+    g.print(
+        "Player tile coord: (" .. select(1, getTileCoords(Player)) .. ", " .. select(2, getTileCoords(Player)) .. ")", 10,
         70)
 
     g.print("VSync: " .. love.window.getVSync(), 10, 90)

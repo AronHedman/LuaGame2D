@@ -50,7 +50,7 @@ end
 
 function Player:update(dt)
     self:playerMovement()
-    Movement.update(self, dt)
+    Movement.playerUpdate(self, dt)
 
     self:checkBoundaries()
 

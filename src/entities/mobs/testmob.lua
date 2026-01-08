@@ -10,6 +10,7 @@ function Testmob:new(x, y)
 
     obj.dirX = 0
     obj.dirY = 0
+    obj.speed = 150
 
     obj.scale = 5
     obj.sWidth = 12
@@ -49,9 +50,6 @@ function Testmob:new(x, y)
     obj.behaviour = "neutral"  --"aggressive", "skittish"
     obj.activity = "wandering" --"targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
-    obj.repathCooldown = 0
-
-
     obj.alive = true
 
     -- AI state
@@ -70,12 +68,13 @@ function Testmob:update(dt)
     Movement.update(self, dt)
 
     -- run 'AI'
+    self.behaviourMachine:update(dt)
     self.pathfinder:update(dt)
     self.actionManager:update(dt)
-    self.behaviourMachine:update(dt)
+
 
     -- animations
-    self.animation:update(dt)
+    Animation.update(self, dt)
 end
 
 function Testmob:draw()

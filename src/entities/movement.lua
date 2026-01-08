@@ -1,26 +1,21 @@
 local Movement = {}
 
-function Movement.update(owner, dt)
+function Movement.playerUpdate(owner, dt)
     -- normalize direction
-
     local dx, dy = 0, 0
 
     if owner.dirX ~= 0 or owner.dirY ~= 0 then
         dx = owner.dirX
         dy = owner.dirY
-
         owner.dirX, owner.dirY = 0, 0
     elseif owner.vector and (owner.vector.x ~= 0 or owner.vector.y ~= 0) then
         dx = owner.vector.x
         dy = owner.vector.y
-
         owner.vector = { 0, 0 }
     end
-
     if dx ~= 0 or dy ~= 0 then
         owner.state = "moving"
-
-        local speed = owner.speed or 200
+        local speed = owner.speed or 150
         local vec = vector(dx, dy):normalized() * speed -- add *dt?
         owner.body:setLinearVelocity(vec.x, vec.y)
 
@@ -45,7 +40,9 @@ function Movement.update(owner, dt)
             owner.state = "idle"
         end
     end
-    -- reset input direction for next frame
+end
+
+function Movement.update(owner, dt)
 end
 
 return Movement

@@ -264,7 +264,7 @@ function AStar:path(start, goal, ignoreCache)
     return res
 end
 
-function AStar:coordToNode(x, y)
+function AStar:coordToNodeByXY(x, y)
     local row = self.nodeByXY[y]
     if not row then return false end
     local node = row[x]

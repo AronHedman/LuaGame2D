@@ -6,12 +6,13 @@ function Pathfinder:new(owner)
     local obj = setmetatable({}, Pathfinder)
 
     obj.owner = owner
-    obj.px = owner.body.x --pixel coordinates
-    obj.py = owner.body.y
+    obj.px, obj.py = owner.body:getPosition()
 
     obj.x, obj.y = pixelToTile(owner.body:getPosition()) --tile coordinates
 
     obj.path = nil
+    obj.start = nil
+    obj.target = nil
 
     obj.repathCooldown = 0
 
@@ -30,6 +31,8 @@ function Pathfinder:update(dt)
     if self.path ~= nil then
         self:progressPath()
         self.repathCooldown = self.repathCooldown - dt
+    else
+        self.repathCooldown = self.repathCooldown - dt
     end
 end
 
@@ -45,32 +48,32 @@ function Pathfinder:progressPath()
     if self.path ~= nil and #self.path > 0 then
         if self.x == self.path[1].x and self.y == self.path[1].y then
             table.remove(self.path, 1)
-            self.targetX, self.targetY = self.path[1].x, self.path[1].y
-
-            -- add movement to next targets, maybe use calculateVec() in functions.lua
-            local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
-            self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
+            if #self.path <= 0 then return end
         end
-    else
-        self.path = nil
+
+        self.targetX, self.targetY = self.path[1].x, self.path[1].y
+        -- add movement to next targets, maybe use calculateVec() in functions.lua
+        local targetPX, targetPY = tileToPixel(self.targetX, self.targetY)
+        self.owner.actionManager:addAction(Actions.moveTowards, self.px, self.py, targetPX, targetPY)
     end
 end
 
-function Pathfinder:hasLOS(goalX, goalY)
+function Pathfinder:hasLOS()
 
 end
 
 function Pathfinder:roam()
     if self.owner.activity == "wandering" and self.path == nil and self.repathCooldown <= 0 then
-        local roamX = math.random(-5, 5)
-        local roamY = math.random(-5, 5)
+        self.start = AStar:coordToNodeByXY(self.x, self.y)
+        while self.target == nil or not self.target.walkable do
+            local roamX = math.random(-3, 3)
+            local roamY = math.random(-3, 3)
+            self.target = AStar:coordToNodeByXY(self.x + roamX, self.y + roamY)
+        end
 
-        local start = AStar:coordToNode(self.x, self.y)
-        local goal = AStar:coordToNode(self.x + roamX, self.y + roamY)
-
-        if start and goal then
-            local target = AStar:path(start, goal)
-            self.path = target
+        if self.start and self.target then
+            self.target = AStar:path(self.start, self.target)
+            self.path = self.target
         end
 
         self.repathCooldown = 4 --seconds
