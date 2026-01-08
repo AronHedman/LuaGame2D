@@ -55,7 +55,7 @@ function setup()
 
     Raycast = require("src.functions.raycast")
     Pathfinder = require("src.entities.pathfinder.pathfinder")
-    StateMachine = require("src.entities.stateMachine")
+    BehaviourMachine = require("src.entities.behaviourMachine")
 
     ActionManager = require("src.ActionManager.actionManager")
     Actions = require("src.ActionManager.Actions")

@@ -8,7 +8,8 @@ function Testmob:new(x, y)
     obj.x = x
     obj.y = y
 
-    obj.vec = nil
+    obj.dirX = 0
+    obj.dirY = 0
 
     obj.scale = 5
     obj.sWidth = 12
@@ -42,26 +43,21 @@ function Testmob:new(x, y)
 
     obj.animation = obj.animations.down
 
-    -- AI state
-    obj.stateMachine = StateMachine:new(obj)
-    obj.pathfinder = Pathfinder:new(obj)
-    obj.actionManager = ActionManager:new(obj)
-
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing statemachine), 3, dead/schedueld for removal
     --state needs reworking, currently a mix of different systems
 
-    obj.behaviours = "neutral" --"aggressive", "skittish"
+    obj.behaviour = "neutral"  --"aggressive", "skittish"
     obj.activity = "wandering" --"targeting", "fleeing"       Predefined states, more can be applied by the actionManager
-    obj.goalX = nil
-    obj.goalY = nil
-    obj.targetMob = nil
-    obj.currentPath = nil
+
     obj.repathCooldown = 0
 
 
     obj.alive = true
 
-
+    -- AI state
+    obj.behaviourMachine = BehaviourMachine:new(obj)
+    obj.pathfinder = Pathfinder:new(obj)
+    obj.actionManager = ActionManager:new(obj)
 
     return obj
 end
@@ -71,10 +67,12 @@ function Testmob:update(dt)
     self.x = self.body:getX()
     self.y = self.body:getY()
 
+    Movement.update(self, dt)
+
     -- run 'AI'
     self.pathfinder:update(dt)
     self.actionManager:update(dt)
-    self.stateMachine:update(dt)
+    self.behaviourMachine:update(dt)
 
     -- animations
     self.animation:update(dt)

@@ -19,7 +19,9 @@ function Movement.update(owner, dt)
 
     if dx ~= 0 or dy ~= 0 then
         owner.state = "moving"
-        local vec = vector(dx, dy):normalized() * owner.speed -- add *dt?
+
+        local speed = owner.speed or 200
+        local vec = vector(dx, dy):normalized() * speed -- add *dt?
         owner.body:setLinearVelocity(vec.x, vec.y)
 
         -- update facing

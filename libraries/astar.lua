@@ -140,7 +140,9 @@ function AStar:neighbor_nodes(node)
     local neighbors = {}
     local x, y = node.x, node.y
     local function add(nx, ny, cost)
-        local n = self.nodeByXY[ny][nx]
+        local row = self.nodeByXY[ny]
+        if not row then return end
+        local n = row[nx]
         if n and n.walkable then
             table.insert(neighbors, { node = n, cost = cost })
         end
@@ -260,6 +262,13 @@ function AStar:path(start, goal, ignoreCache)
         self.cachedPaths[start][goal] = res
     end
     return res
+end
+
+function AStar:coordToNode(x, y)
+    local row = self.nodeByXY[y]
+    if not row then return false end
+    local node = row[x]
+    return node
 end
 
 function AStar:clearCache()
