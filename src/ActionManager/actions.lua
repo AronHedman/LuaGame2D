@@ -1,10 +1,13 @@
 local Actions = {}
 
 Actions.idle = {
-    duration = 2,
+    duration = 1,
     start = function(owner)
         owner.state = "idle"
         owner.dirX, owner.dirY = 0, 0
+    end,
+    update = function(owner)
+        owner.isMoving = false
     end,
     finish = function(owner)
         -- nothing to do
@@ -27,10 +30,10 @@ Actions.moveTowards = {
 }
 
 Actions.playerAttack = {
-    duration = 0.5,
+    duration = 2,
     start = function(owner)
         owner.state = "attacking"
-        owner:raycast(math.pi / 8, 100, nil, 2, 32, function(hit)
+        owner:raycast(math.pi / 8, 100, nil, Actions.playerAttack.duration, 32, function(hit)
             local data = hit.data
             if data and data.type == "TESTMOB" then
                 Player.health = Player.health - 1 --Apply to player to visualise/test

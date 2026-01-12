@@ -40,10 +40,10 @@ end
 
 function Movement.update(owner, dt)
     local dx, dy = 0, 0
+    if owner.isMoving then
+        --possible to add maximum distance to target check here if needed maybe
 
-    if owner.dirX ~= 0 or owner.dirY ~= 0 then
-        dx = owner.dirX
-        dy = owner.dirY
+        dx, dy = calculateVecComponent(owner.x, owner.y, owner.moveTargetX, owner.moveTargetY)
     end
     if dx ~= 0 or dy ~= 0 then
         owner.state = "moving"

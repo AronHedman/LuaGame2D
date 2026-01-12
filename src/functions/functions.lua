@@ -35,7 +35,9 @@ end
 function calculateVecComponent(x1, y1, x2, y2)
     local dx, dy = x2 - x1, y2 - y1
     local len = math.sqrt(dx ^ 2 + dy ^ 2)
-    if len == 0 then return 0, 0 end
+
+    local tolerance = 5 -- if vector is smaller than number then stop
+    if len <= tolerance then return 0, 0 end
     if len > 1 then
         return dx / len, dy / len
     else

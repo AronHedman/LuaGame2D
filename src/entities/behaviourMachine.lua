@@ -17,6 +17,8 @@ function BehaviourMachine:update(dt)
     self.behaviour = Behaviours[self.owner.behaviour] or Behaviours.neutral
     self.activity = self.owner.activity or "wandering"
 
+    -- add a shit ton of mechanics here for setting owner activities and stuff eg aggressive owner only in targeting if targetEnt, else wander
+
     self.behaviour:update(self.owner, dt)
 end
 

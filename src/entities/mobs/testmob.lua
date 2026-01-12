@@ -12,6 +12,12 @@ function Testmob:new(x, y)
     obj.dirY = 0
     obj.speed = 100
 
+    obj.isMoving = false
+    obj.moveTargetX = nil
+    obj.moveTargetY = nil
+
+    obj.alive = true
+
     obj.scale = 5
     obj.sWidth = 12
     obj.sHeight = 18
@@ -47,11 +53,9 @@ function Testmob:new(x, y)
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing behaviourmachine), 3, dead/schedueld for removal
     --state needs reworking, currently a mix of different systems
 
-    obj.behaviour = "aggressive" --"neutral", "aggressive", "skittish"
+    obj.behaviour = "neutral" --"neutral", "aggressive", "skittish"
     obj.activity =
-    "targeting"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
-
-    obj.alive = true
+    "wandering"               --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
     -- AI state
     obj.behaviourMachine = BehaviourMachine:new(obj)
@@ -66,15 +70,14 @@ function Testmob:update(dt)
     self.x = self.body:getX()
     self.y = self.body:getY()
 
-    Movement.update(self, dt)
-    Animation.update(self, dt)
-
     -- run 'AI'
     self.behaviourMachine:update(dt)
     self.pathfinder:update(dt)
     self.actionManager:update(dt)
 
-    -- animations
+    -- movement + animations
+    Movement.update(self, dt)
+    Animation.update(self, dt)
 end
 
 function Testmob:draw()
@@ -110,6 +113,13 @@ function Testmob.drawTestmobs()
     for _, mob in ipairs(Testmob.list) do
         table.insert(drawables, mob)
     end
+end
+
+function Testmob:stopMovement()
+    self.isMoving = false
+    self.moveTargetX = nil
+    self.moveTargetY = nil
+    self.body:setLinearVelocity(0, 0)
 end
 
 return Testmob

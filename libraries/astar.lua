@@ -41,7 +41,6 @@ function AStar.new(map)
     }
     self.nodeTable = {}
     self.nodeByXY = {}
-    self.cachedPaths = {}
 
     self:updateNodes()
 
@@ -103,9 +102,6 @@ function AStar:updateNodes()
             self.nodeByXY[y][x] = node
         end
     end
-
-    -- Reset cached paths when tiles change
-    self.cachedPaths = {}
 end
 
 function AStar:drawWalkableNodes()
@@ -207,6 +203,7 @@ end
 
 function AStar:a_star(start, goal)
     if not start or not goal then return nil end
+
     local closedset = {}
     local openset = { start }
     local came_from = {}
@@ -245,16 +242,8 @@ end
 
 -- Exposed functions
 
-function AStar:path(start, goal, ignoreCache)
-    if not self.cachedPaths[start] then self.cachedPaths[start] = {} end
-    if self.cachedPaths[start][goal] and not ignoreCache then
-        return self.cachedPaths[start][goal]
-    end
-
+function AStar:path(start, goal)
     local res = self:a_star(start, goal)
-    if not self.cachedPaths[start][goal] then
-        self.cachedPaths[start][goal] = res
-    end
     return res
 end
 
@@ -265,13 +254,8 @@ function AStar:coordToNodeByXY(x, y)
     return node
 end
 
-function AStar:clearCache()
-    self.cachedPaths = {}
-end
-
 function AStar:invalidate() -- call when map, tiles or objects change
     self:updateNodes()
-    self:clearCache()
 end
 
 return AStar

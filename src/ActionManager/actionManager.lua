@@ -1,7 +1,8 @@
 local ActionManager = {}
 ActionManager.__index = ActionManager
 
-local unpack = table.unpack or unpack --crashed for some reason, so added a fallback
+local unpack = table.unpack or unpack
+-- unpack sometimes (rarely) crashed for some reason, so added a safety / priority if the different unpack sources collided or something
 
 function ActionManager:new(owner)
     local obj = setmetatable({}, ActionManager)
@@ -33,7 +34,7 @@ end
 
 -- queue an action with separate args
 function ActionManager:addAction(action, ...)
-    if #self.queue < 100 then --perhaps remove if problems?
+    if #self.queue < 100 and action ~= self.queue[#self.queue] then --perhaps remove if problems?
         table.insert(self.queue, { action = action, args = { ... } })
     end
 end
