@@ -12,7 +12,8 @@ function Pathfinder:new(owner)
 
     obj.path = nil
     obj.start = nil
-    obj.target = nil
+    obj.target = nil    --target node / tile
+    obj.targetEnt = nil --entity targeted
 
     obj.repathCooldown = 0
 
@@ -46,6 +47,12 @@ function Pathfinder:progressPath()
         return
     end
 
+    --test for more accurate paths / more frequent checking of paths
+    if self.repathCooldown <= 0 then
+        self.path = nil
+        return
+    end
+
     if self.path ~= nil and #self.path > 0 then
         if self.x == self.path[1].x and self.y == self.path[1].y then
             table.remove(self.path, 1)
@@ -74,13 +81,32 @@ function Pathfinder:roam()
         end
 
         if self.start and tile then
-            self.target = AStar:path(self.start, tile)
-            self.path = self.target
+            self.path = AStar:path(self.start, tile)
             self.targetX, self.targetY = self.path[1].x, self.path[1].y
         end
 
         self.repathCooldown = 4 --seconds
     end
+end
+
+function Pathfinder:pathfindTarget()
+    if self.owner.activity == "targeting" and self and self.path == nil and self.repathCooldown <= 0 then
+        self.start = AStar:coordToNodeByXY(self.x, self.y)
+        if not self.targetEnt or not self.targetEnt.x or not self.targetEnt.y then
+            self.targetEnt = nil
+            return
+        end
+
+        local tx, ty = pixelToTile(self.targetEnt.x, self.targetEnt.y)
+        self.target = AStar:coordToNodeByXY(tx, ty)
+        print(self.target.x, self.target.x)
+        if self.start and self.target ~= nil then
+            print("test")
+            self.path = AStar:path(self.start, self.target)
+            self.targetX, self.targetY = self.path[1].x, self.path[1].y
+        end
+    end
+    self.repathCooldown = 1 --seconds
 end
 
 ------------------------

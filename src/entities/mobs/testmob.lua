@@ -44,11 +44,12 @@ function Testmob:new(x, y)
 
     obj.animation = obj.animations.down
 
-    obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing statemachine), 3, dead/schedueld for removal
+    obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing behaviourmachine), 3, dead/schedueld for removal
     --state needs reworking, currently a mix of different systems
 
-    obj.behaviour = "neutral"  --"aggressive", "skittish"
-    obj.activity = "wandering" --"targeting", "fleeing"       Predefined states, more can be applied by the actionManager
+    obj.behaviour = "aggressive" --"neutral", "aggressive", "skittish"
+    obj.activity =
+    "targeting"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
     obj.alive = true
 
