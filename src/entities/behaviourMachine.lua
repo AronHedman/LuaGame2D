@@ -19,7 +19,11 @@ function BehaviourMachine:update(dt)
 
     -- add a shit ton of mechanics here for setting owner activities and stuff eg aggressive owner only in targeting if targetEnt, else wander
 
-    self.behaviour:update(self.owner, dt)
+
+    --test
+    if not self.owner.doesAction then
+        self.behaviour:update(self.owner, dt)
+    end
 end
 
 return BehaviourMachine

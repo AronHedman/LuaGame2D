@@ -5,9 +5,10 @@ Actions.idle = {
     start = function(owner)
         owner.state = "idle"
         owner.dirX, owner.dirY = 0, 0
+        print("test")
     end,
     update = function(owner)
-        owner.isMoving = false
+        --owner.isMoving = false
     end,
     finish = function(owner)
         -- nothing to do

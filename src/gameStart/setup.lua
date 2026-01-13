@@ -63,6 +63,9 @@ function setup()
     Movement = require("src.entities.movement")
     Animation = require("src.entities.animation")
 
+    Scheduler = require("src.scheduler")
+    scheduler = Scheduler:new()
+
     -------------------------------------------------------
     require("src.player")
     Testmob = require("src.entities.mobs.testmob")

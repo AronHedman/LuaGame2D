@@ -17,6 +17,7 @@ end
 function ActionManager:update(dt)
     if not self.currentAction and #self.queue > 0 then
         local next = table.remove(self.queue, 1)
+        self.owner.doesAction = true --test
         self:start(next.action, next.args)
     end
 
@@ -24,6 +25,7 @@ function ActionManager:update(dt)
         self.timer = self.timer - dt
         if self.timer <= 0 then
             if self.currentAction.finish then
+                self.owner.doesAction = false --test
                 self.currentAction.finish(self.owner)
             end
             self.currentAction = nil

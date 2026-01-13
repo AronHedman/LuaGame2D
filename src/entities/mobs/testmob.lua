@@ -16,6 +16,8 @@ function Testmob:new(x, y)
     obj.moveTargetX = nil
     obj.moveTargetY = nil
 
+    obj.doesAction = false
+
     obj.alive = true
 
     obj.scale = 5
@@ -53,9 +55,9 @@ function Testmob:new(x, y)
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing behaviourmachine), 3, dead/schedueld for removal
     --state needs reworking, currently a mix of different systems
 
-    obj.behaviour = "neutral" --"neutral", "aggressive", "skittish"
+    obj.behaviour = "aggressive" --"neutral", "aggressive", "skittish"
     obj.activity =
-    "wandering"               --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
+    "wandering"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
     -- AI state
     obj.behaviourMachine = BehaviourMachine:new(obj)
