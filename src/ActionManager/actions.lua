@@ -1,14 +1,10 @@
 local Actions = {}
 
 Actions.idle = {
-    duration = 1,
+    duration = math.random(1, 5),
     start = function(owner)
         owner.state = "idle"
         owner.dirX, owner.dirY = 0, 0
-        print("test")
-    end,
-    update = function(owner)
-        --owner.isMoving = false
     end,
     finish = function(owner)
         -- nothing to do

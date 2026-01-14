@@ -31,7 +31,7 @@ function Item:call(event, ...)
   end
 end
 
-function Item.iid() --Generates a unique instance ID in hexadecimal (Source: Lua - Lume Library, slightly modified with a randomseed)
+function Item.iid() --Generates a unique instance ID in hexadecimal (Source: Lua - Lume Library, slightly modified with a randomseed(moved randomseed to setup))
   local fn = function(x)
     local r = math.random(16) - 1
     r = (x == "x") and (r + 1) or (r % 4) + 9

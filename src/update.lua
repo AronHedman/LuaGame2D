@@ -20,6 +20,8 @@ function update(dt)
     world:update(dt)
     Player:update(dt)
 
+    scheduler:update(dt)
+
     Testmob.updateTestmobs(dt)
     Raycast.updateRaycasters(dt)
 

@@ -22,6 +22,14 @@ function ActionManager:update(dt)
     end
 
     if self.currentAction then
+        if self.currentAction.update then
+            if self.currentArgs and #self.currentArgs > 0 then
+                self.currentAction.update(self.owner, dt, unpack(self.currentArgs))
+            else
+                self.currentAction.update(self.owner, dt)
+            end
+        end
+
         self.timer = self.timer - dt
         if self.timer <= 0 then
             if self.currentAction.finish then
@@ -34,7 +42,7 @@ function ActionManager:update(dt)
     end
 end
 
--- queue an action with separate args
+-- queue an action with the args seperated
 function ActionManager:addAction(action, ...)
     if #self.queue < 100 and action ~= self.queue[#self.queue] then --perhaps remove if problems?
         table.insert(self.queue, { action = action, args = { ... } })
@@ -43,6 +51,7 @@ end
 
 function ActionManager:start(action, args)
     self.currentAction = action
+    self.currentArgs = args or {}
     self.timer = action.duration or 0
     if self.owner == Player then
         gamestate = 1.5
