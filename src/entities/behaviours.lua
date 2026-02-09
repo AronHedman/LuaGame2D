@@ -32,6 +32,10 @@ Behaviours.aggressive = {
             end
         else
             if owner.activity == "targeting" then
+                if distance(owner.x, owner.y, Player.x, Player.y) < 2 * map1.tilewidth and not (distance(owner.x, owner.y, Player.x, Player.y) < 1) then
+                    owner.actionManager:addAction(Actions.lunge)
+                    print("ling")
+                end
                 if owner.pathfinder.path ~= nil then
                     owner.pathfinder:progressPath()
                 else

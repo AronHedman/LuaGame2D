@@ -25,7 +25,7 @@ function tileToPixel(tx, ty)
     return x, y
 end
 
-function distance(x1, y1, x2, y2)
+function distance(x1, y1, x2, y2) --returns in pixels
     local dx = x2 - x1
     local dy = y2 - y1
     local dist = math.sqrt(dx ^ 2 + dy ^ 2)

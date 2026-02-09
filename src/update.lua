@@ -23,12 +23,14 @@ function update(dt)
     scheduler:update(dt)
 
     Testmob.updateTestmobs(dt)
+    Testmob2.updateTestmobs(dt)
     Raycast.updateRaycasters(dt)
 
     drawables = {};
 
     table.insert(drawables, Player)
     Testmob.drawTestmobs() --Inserts Testmob into drawables
+    Testmob2.drawTestmobs()
 
     for _, obj in ipairs(getTrees()) do
         table.insert(drawables, obj)

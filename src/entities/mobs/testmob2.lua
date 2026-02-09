@@ -1,9 +1,9 @@
-local Testmob = { list = {} }
-Testmob.__index = Testmob
+local Testmob2 = { list = {} }
+Testmob2.__index = Testmob2
 
 -- Constructor
-function Testmob:new(x, y)
-    local obj = setmetatable({}, Testmob)
+function Testmob2:new(x, y)
+    local obj = setmetatable({}, Testmob2)
 
     obj.x = x
     obj.y = y
@@ -57,7 +57,7 @@ function Testmob:new(x, y)
 
     obj.behaviour = "aggressive" --"neutral", "aggressive", "skittish"
     obj.activity =
-    "targeting"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
+    "wandering"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
     -- AI state
     obj.behaviourMachine = BehaviourMachine:new(obj)
@@ -67,7 +67,7 @@ function Testmob:new(x, y)
     return obj
 end
 
-function Testmob:update(dt)
+function Testmob2:update(dt)
     -- sync physics → logical position
     self.x = self.body:getX()
     self.y = self.body:getY()
@@ -82,10 +82,12 @@ function Testmob:update(dt)
     Animation.update(self, dt)
 end
 
-function Testmob:draw()
+function Testmob2:draw()
     --temp
     if self.activity == "targeting" then
         g.setColor(1, 0.3, 0.3, 1)
+    elseif self.activity == "wandering" then
+        g.setColor(1, 1, 0.3, 1)
     end
 
     self.animation:draw(
@@ -102,34 +104,34 @@ function Testmob:draw()
 end
 
 -- Entry point for Testmob
-function Testmob:initTestmob(x, y)
-    local mob = Testmob:new(x, y)
+function Testmob2:initTestmob(x, y)
+    local mob = Testmob2:new(x, y)
 
-    table.insert(Testmob.list, mob)
+    table.insert(Testmob2.list, mob)
     return mob
 end
 
-function Testmob.updateTestmobs(dt)
-    for i = #Testmob.list, 1, -1 do
-        local mob = Testmob.list[i]
+function Testmob2.updateTestmobs(dt)
+    for i = #Testmob2.list, 1, -1 do
+        local mob = Testmob2.list[i]
         mob:update(dt)
         if not mob.alive then
-            table.remove(Testmob.list, i)
+            table.remove(Testmob2.list, i)
         end
     end
 end
 
-function Testmob.drawTestmobs()
-    for _, mob in ipairs(Testmob.list) do
+function Testmob2.drawTestmobs()
+    for _, mob in ipairs(Testmob2.list) do
         table.insert(drawables, mob)
     end
 end
 
-function Testmob:stopMovement()
+function Testmob2:stopMovement()
     self.isMoving = false
     self.moveTargetX = nil
     self.moveTargetY = nil
     self.body:setLinearVelocity(0, 0)
 end
 
-return Testmob
+return Testmob2

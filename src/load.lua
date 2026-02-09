@@ -33,6 +33,9 @@ function load()
 
     testmob.pathfinder.targetEnt = Player
 
+    testmob2 = Testmob2:initTestmob(400, 700)
+
+    testmob2.pathfinder.targetEnt = Player
     -------
     tempLoad()
 end

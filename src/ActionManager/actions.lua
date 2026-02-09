@@ -58,8 +58,8 @@ Actions.lunge = {
     duration = 0.3,
     start = function(owner)
         local dir = vector(owner.dirX, owner.dirY)
-        if dir:len() == 0 then dir = vector(0, 1) end
-        owner.body:setLinearVelocity(dir.x * 600, dir.y * 600)
+        if dir:len() == 0 then dir = vector(0, 0) end
+        owner.body:setLinearVelocity(dir.x * owner.speed * 6, dir.y * owner.speed * 6)
         owner.state = "lunge"
     end,
     finish = function(owner)

@@ -69,6 +69,7 @@ function setup()
     -------------------------------------------------------
     require("src.player")
     Testmob = require("src.entities.mobs.testmob")
+    Testmob2 = require("src.entities.mobs.testmob2")
 
     require("src.objects.trees")
 
