@@ -39,6 +39,7 @@ function Movement.playerUpdate(owner, dt)
 end
 
 function Movement.update(owner, dt)
+    if owner.doesAction then return end
     local dx, dy = 0, 0
     if owner.isMoving then
         --possible to add maximum distance to target check here if needed maybe

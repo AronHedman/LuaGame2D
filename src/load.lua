@@ -29,9 +29,18 @@ function load()
     tempInventory.slots[3] = Item:new(iron_axe)
     ------
 
-    testmob = Testmob:initTestmob(400, 300)
+    testmob = Testmob:initTestmob(500, 500)
 
     testmob.pathfinder.targetEnt = Player
+
+    --testmob12 = Testmob:initTestmob(800, 300)
+    --testmob12.pathfinder.targetEnt = Player
+
+    --testmob13 = Testmob:initTestmob(400, 600)
+    --testmob13.pathfinder.targetEnt = Player
+
+    --testmob14 = Testmob:initTestmob(800, 600)
+    --testmob14.pathfinder.targetEnt = Player
 
     testmob2 = Testmob2:initTestmob(400, 700)
 

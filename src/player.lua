@@ -1,5 +1,7 @@
 Player = {}
 
+Player.IMMUNITY = 0.4
+
 function Player:load()
     self.state = nil --"idle"
     self.facing = "down"
@@ -21,6 +23,7 @@ function Player:load()
     ----Game stats
 
     self.health = 10
+    self.immunityCooldown = 0
 
     -----
 
@@ -49,6 +52,13 @@ function Player:load()
 end
 
 function Player:update(dt)
+    if self.immunityCooldown > 0 then
+        self.immunityCooldown = self.immunityCooldown - dt
+        if self.immunityCooldown < 0 then
+            self.immunityCooldown = 0
+        end
+    end
+
     self:playerMovement()
     Movement.playerUpdate(self, dt)
 
@@ -58,7 +68,6 @@ function Player:update(dt)
     self.y = self.body:getY()
 
     Animation.update(self, dt)
-
 
     self.actionManager:update(dt)
 end
@@ -89,4 +98,11 @@ function Player:checkBoundaries()
     if sy <= 0 then self.body:setY(0) end
     if sx >= mx then self.body:setX(mx) end
     if sy >= my then self.body:setY(my) end
+end
+
+function Player:takeDmg(dmg)
+    if Player.immunityCooldown == 0 then
+        Player.health = Player.health - dmg
+        Player.immunityCooldown = Player.IMMUNITY
+    end
 end

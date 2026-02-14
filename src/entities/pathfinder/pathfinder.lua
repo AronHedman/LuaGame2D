@@ -45,7 +45,10 @@ end
 --Pathfinding functions
 
 function Pathfinder:progressPath()
-    if self.path == nil then return end
+    if self.path == nil then
+        print("Is this check even neccessary?")
+        return
+    end
     if #self.path <= 0 then
         self.path = nil
         self.owner:stopMovement()
@@ -54,9 +57,7 @@ function Pathfinder:progressPath()
 
     --test for more accurate paths / more frequent checking of paths
     if self.repathCooldown <= 0 then
-        self.path = nil
-        self.owner.isMoving = false
-        return
+        self:repath()
     end
 
     if self.path ~= nil and #self.path > 0 then
@@ -80,7 +81,17 @@ function Pathfinder:progressPath()
 end
 
 function Pathfinder:hasLOS()
+    if not self.repathCooldown <= 0 then return end
+end
 
+function Pathfinder:repath()
+    self.path = nil
+    self.owner.isMoving = false
+    if self.owner.activity == "targeting" then
+        self:pathfindTarget()
+    else
+        self:roam()
+    end
 end
 
 function Pathfinder:roam()

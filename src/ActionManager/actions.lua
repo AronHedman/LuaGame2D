@@ -43,9 +43,16 @@ Actions.playerAttack = {
 }
 
 Actions.mobAttack = {
-    duration = 0.7,
+    duration = 0.5,
     start = function(owner)
         owner.state = "attacking"
+        owner.cooldowns["attackCooldown"] = 1
+        print("Surpriseattack")
+
+        if distance(owner.x, owner.y, Player.x, Player.y) < 1 * map1.tilewidth then
+            Player:takeDmg(owner.attack)
+        end
+
         -- set up mob attack logic
     end,
     finish = function(owner)
@@ -55,15 +62,20 @@ Actions.mobAttack = {
 }
 
 Actions.lunge = {
-    duration = 0.3,
+    duration = 0.4,
     start = function(owner)
-        local dir = vector(owner.dirX, owner.dirY)
-        if dir:len() == 0 then dir = vector(0, 0) end
-        owner.body:setLinearVelocity(dir.x * owner.speed * 6, dir.y * owner.speed * 6)
+        local dir = vector(calculateVecComponent(owner.x, owner.y, owner.moveTargetX, owner.moveTargetY))
+        if dir:len() == 0 then
+            dir = vector(0, 0)
+        end
+        owner.body:setLinearDamping(5)
+        owner.body:applyLinearImpulse(dir.x * owner.speed, dir.y * owner.speed)
+        owner.cooldowns["lungeCooldown"] = 3
         owner.state = "lunge"
     end,
     finish = function(owner)
         owner.body:setLinearVelocity(0, 0)
+        owner.body:setLinearDamping(linearDamping)
         owner.state = "idle"
     end
 }
