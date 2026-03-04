@@ -4,22 +4,23 @@ Player.IMMUNITY = 0.4
 
 function Player:load()
     self.state = nil --"idle"
-    self.facing = "down"
+    self.facing = "s"
 
     self.x = 200;
     self.y = 200;
 
-    self.sWidth = 12 --Sprite witdth
-    self.sHeight = 18
+    self.sWidth = 32
+    self.sHeight = 32
 
-    self.cWidth = 24 --Collision width
-    self.cHeight = 24
+    self.cWidth = 35 --Collision width
+    self.cHeight = 35
 
     self.speed = 175
     self.dirX = 0
     self.dirY = 0
     self.animationSpeed = 0.2
-    self.scale = 5
+    self.scale = 3
+
     ----Game stats
 
     self.health = 10
@@ -36,17 +37,21 @@ function Player:load()
     self.fixture = p.newFixture(self.body, self.shape, 1)
 
 
-    self.spritesheet = g.newImage("assets/testPlayer.png")
-    self.grid = anim8.newGrid(self.spritesheet:getWidth() / 4, self.spritesheet:getHeight() / 4,
+    self.spritesheet = g.newImage("assets/PlayerV2.png")
+    self.grid = anim8.newGrid(self.spritesheet:getWidth() / 112, self.spritesheet:getHeight(),
         self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
     self.animations = {
-        down = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed),
-        left = anim8.newAnimation(self.grid("1-4", 2), self.animationSpeed),
-        right = anim8.newAnimation(self.grid("1-4", 3), self.animationSpeed),
-        up = anim8.newAnimation(self.grid("1-4", 4), self.animationSpeed)
+        s = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed),
+        se = anim8.newAnimation(self.grid("5-8", 1), self.animationSpeed),
+        e = anim8.newAnimation(self.grid("9-12", 1), self.animationSpeed),
+        ne = anim8.newAnimation(self.grid("13-16", 1), self.animationSpeed),
+        n = anim8.newAnimation(self.grid("17-20", 1), self.animationSpeed),
+        nw = anim8.newAnimation(self.grid("21-24", 1), self.animationSpeed),
+        w = anim8.newAnimation(self.grid("25-28", 1), self.animationSpeed),
+        sw = anim8.newAnimation(self.grid("29-32", 1), self.animationSpeed)
     }
     --self.animations.idle = anim8.newAnimation(self.grid("3-4", 1), self.animationSpeed * 4)
-    self.animation = self.animations.down
+    self.animation = self.animations.s
 
     self.actionManager = ActionManager:new(self)
 end
@@ -73,8 +78,7 @@ function Player:update(dt)
 end
 
 function Player:draw() --draw function
-    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.sWidth / 2,
-        self.sHeight * 0.82)
+    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.sWidth, self.sHeight * 1.55)
 end
 
 function Player:playerMovement()

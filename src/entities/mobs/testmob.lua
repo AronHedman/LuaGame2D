@@ -57,7 +57,7 @@ function Testmob:new(x, y)
 
     obj.behaviour = "aggressive" --"neutral", "aggressive", "skittish"
     obj.activity =
-    "targeting"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
+    "wandering"                  --"wandering", "targeting", "fleeing"       Predefined states, more can be applied by the actionManager
 
     -- AI state
     obj.behaviourMachine = BehaviourMachine:new(obj)

@@ -15,18 +15,27 @@ function Movement.playerUpdate(owner, dt)
         local vec = vector(dx, dy):normalized() * speed -- add *dt?
         owner.body:setLinearVelocity(vec.x, vec.y)
 
-        -- update facing
         if math.abs(dx) > math.abs(dy) then
             if dx > 0 then
-                owner.facing = "right"
+                owner.facing = "e"
             else
-                owner.facing = "left"
+                owner.facing = "w"
+            end
+        elseif math.abs(dy) > math.abs(dx) then
+            if dy > 0 then
+                owner.facing = "s"
+            else
+                owner.facing = "n"
             end
         else
-            if dy > 0 then
-                owner.facing = "down"
+            if dx > 0 and dy > 0 then
+                owner.facing = "se"
+            elseif dx > 0 and dy < 0 then
+                owner.facing = "ne"
+            elseif dx < 0 and dy > 0 then
+                owner.facing = "sw"
             else
-                owner.facing = "up"
+                owner.facing = "nw"
             end
         end
     else
