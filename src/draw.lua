@@ -38,7 +38,7 @@ function drawShadows()
         local height = width / 3
 
         g.setColor(0, 0, 0, 0.35)
-        g.ellipse("fill", obj.x, obj.y + obj.sHeight / 2, width, height)
+        g.ellipse("fill", obj.x, obj.y + obj.sHeight / 2.2, width, height)
         g.setColor(1, 1, 1, 1)
     end
 end
