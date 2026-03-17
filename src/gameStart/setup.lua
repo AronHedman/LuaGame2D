@@ -7,6 +7,29 @@ function setup()
 
     math.randomseed(love.timer.getTime())
 
+    -----------------------------------------------------
+    white = { 1, 1, 1, 1 }
+    black = { 0, 0, 0, 1 }
+    mainGrey = { 0.5, 0.5, 0.45, 1 }
+    brightGrey = { 0.7, 0.7, 0.65, 1 }
+    transparentGrey = { 0.3, 0.3, 0.3, 0.6 }
+    transparentGreyHighlight = { 0.7, 0.7, 0.7, 0.3 }
+    thickLine = 5 * scale
+    mediumLine = 3 * scale
+    thinLine = 1.5 * scale
+
+    font = g.newFont("assets/font.ttf", 16 * scale)
+    bigAssFont = g.newFont("assets/font.ttf", 48 * scale)
+    pi = math.pi
+
+    -----------------------------------------------------
+
+    Menu = require("src.menus.mainMenu")
+    GameMenu = require("src.menus.gameMenu")
+
+    -----------------------------------------------------
+
+
     p.setMeter(64)                 --Set to one tile
     world = p.newWorld(0, 0, true) --No gravity no sleeping
 
@@ -37,19 +60,6 @@ function setup()
 
     AStar = require("libraries.astar")
     AStar = AStar.new(map1) --Temp, move maploading to maploader later.
-
-    -----------------------------------------------------
-    white = { 1, 1, 1, 1 }
-    black = { 0, 0, 0, 1 }
-    mainGrey = { 0.5, 0.5, 0.45, 1 }
-    brightGrey = { 0.7, 0.7, 0.65, 1 }
-    transparentGrey = { 0.3, 0.3, 0.3, 0.6 }
-    transparentGreyHighlight = { 0.7, 0.7, 0.7, 0.3 }
-    thickLine = 5 * scale
-    mediumLine = 3 * scale
-    thinLine = 1.5 * scale
-
-    pi = math.pi
 
     -----------------------------------------------------
 

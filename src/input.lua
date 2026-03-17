@@ -71,6 +71,15 @@ end
 
 function love.mousepressed(x, y, button)
     if button == 1 then
+        if gamestate == 5 then
+            Menu:click(x, y)
+            return
+        end
+        if gamestate == 0 then
+            GameMenu:click(x, y)
+            return
+        end
+
         if hotSlot.inventory ~= nil and gamestate == 1 then
             activeSlot = hotSlot.slot
         elseif hotSlot.inventory ~= nil then

@@ -1,4 +1,9 @@
 function draw()
+    if gamestate == 5 then
+        Menu:draw()
+        return
+    end
+
     cam:attach() --Attach the camera to the screen
     map1:drawLayer(map1.layers["Ground"])
 
@@ -21,6 +26,10 @@ function draw()
     drawDebugPost()
 
     drawUI()
+
+    if gamestate == 0 then
+        GameMenu:draw()
+    end
 end
 
 function drawShadows()

@@ -94,14 +94,14 @@ function Player:raycast(angle, radius, dVec, duration, rayAmoun, onHit) -- Rayca
 end
 
 function Player:checkBoundaries()
-    sx, sy = self.body:getPosition()
+    bx, by = self.body:getPosition()
     mx = map1.tilewidth * map1.width
     my = map1.tileheight * map1.height
 
-    if sx <= 0 then self.body:setX(0) end
-    if sy <= 0 then self.body:setY(0) end
-    if sx >= mx then self.body:setX(mx) end
-    if sy >= my then self.body:setY(my) end
+    if bx <= 0 then self.body:setX(0) end
+    if by <= 0 then self.body:setY(0) end
+    if bx >= mx then self.body:setX(mx) end
+    if by >= my then self.body:setY(my) end
 end
 
 function Player:takeDmg(dmg)

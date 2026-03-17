@@ -1,21 +1,18 @@
--- Global activeSlot remains as-is, assuming it's managed by the player or game logic
 activeSlot = 1
 hotSlot = { inventory = nil, slot = nil } -- {inventory, slot}
 
--- Define the Inventory class using Lua's metatable for OOP-like behavior
-Inventory = {} --Metatable for Inventory class
+Inventory = {}                            --Metatable for Inventory class
 
 function Inventory:new(options)
-    local self = setmetatable({}, { __index = Inventory }) --Creates an empty instance that will look up logic from the Inventory table.
+    local self = setmetatable({}, { __index = Inventory })
 
     -- Default options
     local defaults = {
         rows = 5,
         cols = 7,
         hasHotbar = false,
-        scaleMultiplier = 1.0, -- Optional scale adjustment per inventory
-        --type = "chest"  -- Can be "player", "chest", "npc", etc., but mainly used for layout logic
-        isActive = false       -- Whether this inventory is currently open
+        scaleMultiplier = 1.0,
+        isActive = false
     }
 
     -- Merge user options with defaults
@@ -54,8 +51,8 @@ function Inventory:draw(x, y)
     local slotSize = 32 * invScale
     local paddingX = 10 * invScale
     local paddingY = 10 * invScale
-    local invW = self.cols * (slotSize + paddingX) -- Calculate width properly (slots + paddings between)
-    local invH = self.rows * (slotSize + paddingY) -- Same for height
+    local invW = self.cols * (slotSize + paddingX)
+    local invH = self.rows * (slotSize + paddingY)
 
     -- Default to centered position if x or y not provided
 
@@ -74,14 +71,14 @@ function Inventory:draw(x, y)
     if self.type == "player" then
         y = screenH / 2 - invH / 2 + 15 * invScale
     else
-        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale -- Simpler centering above player inventory
+        y = screenH / 2 - 3 * (slotSize + paddingY) + 15 * invScale
     end
 
 
     -- Draw background rectangle
     g.setColor(mainGrey)
     g.setLineWidth(thickLine)
-    g.rectangle("line", x, y, invW + paddingX, invH + paddingY, 8 * invScale) -- Adjusted for outer padding
+    g.rectangle("line", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
 
     g.setColor(transparentGrey)
     g.rectangle("fill", x, y, invW + paddingX, invH + paddingY, 8 * invScale)
@@ -99,7 +96,7 @@ function Inventory:draw(x, y)
         local slot_num = i - startSlot + 1
         local row = math.floor((slot_num - 1) / slotsPerRow)
         local col = (slot_num - 1) % slotsPerRow
-        local j = col - math.floor((self.cols - 1) / 2) -- Center columns (e.g., -3 to 3 for cols=7)
+        local j = col - math.floor((self.cols - 1) / 2)
 
         --slot x/y
         local sx = x + paddingX / 2 + (col * (slotSize + paddingX)) + paddingX / 2
@@ -159,7 +156,7 @@ function Inventory:drawHotbar()
     for slot = 1, self.hotbarSize do
         g.setColor(mainGrey)
 
-        local i = slot - centerOffset -- e.g., -3 to 3 for 7 slots
+        local i = slot - centerOffset
         local sx = hotbarX + padding / 2 + ((slot - 1) * (slotSize + padding))
         local sy = hotbarY + padding / 2
 
@@ -204,7 +201,7 @@ end
 
 function Inventory:rightClick()
     local mx, my = love.mouse.getPosition()
-    -- Similar to leftClick, perhaps for splitting stacks or other actions
+    -- Similar to leftClick, perhaps for splitting stacks or other actios
 
     print("Right click in " .. hotSlot.inventory.type .. " at slot " .. hotSlot.slot)
 end
