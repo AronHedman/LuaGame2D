@@ -46,20 +46,7 @@ function love.keypressed(key)
             inventories["temp"].isActive = true
         end
     end
-    if key == "g" then
-        Player.raycast(Player, pi / 17, 100, nil, 2)
-
-        if Player.raycaster.hits then
-            print(Player.raycaster.hits.type)
-        end
-    end
-    if key == "h" then
-        Raycast.raycast(Player, math.pi / 2, 200, nil, 1, 32)
-        if Player.raycaster.hits then
-            print(Player.raycaster.hits.type)
-        end
-    end
-    if key == "m" then
+    if key == "c" then
         Player.actionManager:addAction(Actions.playerAttack)
     end
     if key == "r" then
@@ -71,6 +58,10 @@ end
 
 function love.mousepressed(x, y, button)
     if button == 1 then
+        if gamestate == 1 then
+            Player.actionManager:addAction(Actions.playerAttack)
+        end
+
         if gamestate == 5 then
             Menu:click(x, y)
             return

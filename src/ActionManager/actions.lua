@@ -27,7 +27,7 @@ Actions.moveTowards = {
 }
 
 Actions.playerAttack = {
-    duration = 2,
+    duration = 1.1,
     start = function(owner)
         owner.state = "attacking"
         owner:raycast(math.pi / 8, 100, nil, Actions.playerAttack.duration, 32, function(hit)
@@ -39,6 +39,7 @@ Actions.playerAttack = {
     end,
     finish = function(owner)
         owner.state = "idle"
+        owner.isAttacking = false
     end
 }
 
@@ -57,6 +58,7 @@ Actions.mobAttack = {
     end,
     finish = function(owner)
         owner.state = "idle"
+        owner.isAttacking = false
         -- clean up mob attack state
     end
 }

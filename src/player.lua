@@ -3,8 +3,10 @@ Player = {}
 Player.IMMUNITY = 0.4
 
 function Player:load()
-    self.state = nil --"idle"
+    self.state = "idle"
     self.facing = "s"
+    self.isAttacking = false
+    self.doesAction = false
 
     self.x = 200;
     self.y = 200;
@@ -37,21 +39,84 @@ function Player:load()
     self.fixture = p.newFixture(self.body, self.shape, 1)
 
 
-    self.spritesheet = g.newImage("assets/PlayerV2.png")
+    self.spritesheet = g.newImage("assets/PlayerV3.png")
     self.grid = anim8.newGrid(self.spritesheet:getWidth() / 112, self.spritesheet:getHeight(),
         self.spritesheet:getWidth(), self.spritesheet:getHeight(), 0, 0)
     self.animations = {
-        s = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed),
-        se = anim8.newAnimation(self.grid("5-8", 1), self.animationSpeed),
-        e = anim8.newAnimation(self.grid("9-12", 1), self.animationSpeed),
-        ne = anim8.newAnimation(self.grid("13-16", 1), self.animationSpeed),
-        n = anim8.newAnimation(self.grid("17-20", 1), self.animationSpeed),
-        nw = anim8.newAnimation(self.grid("21-24", 1), self.animationSpeed),
-        w = anim8.newAnimation(self.grid("25-28", 1), self.animationSpeed),
-        sw = anim8.newAnimation(self.grid("29-32", 1), self.animationSpeed)
+        walking = {
+            s = anim8.newAnimation(self.grid("1-4", 1), self.animationSpeed),
+            se = anim8.newAnimation(self.grid("5-8", 1), self.animationSpeed),
+            e = anim8.newAnimation(self.grid("9-12", 1), self.animationSpeed),
+            ne = anim8.newAnimation(self.grid("13-16", 1), self.animationSpeed),
+            n = anim8.newAnimation(self.grid("17-20", 1), self.animationSpeed),
+            nw = anim8.newAnimation(self.grid("21-24", 1), self.animationSpeed),
+            w = anim8.newAnimation(self.grid("25-28", 1), self.animationSpeed),
+            sw = anim8.newAnimation(self.grid("29-32", 1), self.animationSpeed)
+        },
+        attack_1 = {
+            s = anim8.newAnimation(self.grid("33-36", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            se = anim8.newAnimation(self.grid("37-40", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            e = anim8.newAnimation(self.grid("41-44", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            ne = anim8.newAnimation(self.grid("45-48", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            n = anim8.newAnimation(self.grid("49-52", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            nw = anim8.newAnimation(self.grid("53-56", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            w = anim8.newAnimation(self.grid("57-60", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+            sw = anim8.newAnimation(self.grid("61-64", 1),
+                { self.animationSpeed * 1.5, self.animationSpeed * 1.5, self.animationSpeed * 1.25, self.animationSpeed *
+                1.25 }),
+        },
+        attack_2 = {
+            s = anim8.newAnimation(self.grid("65-70", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            se = anim8.newAnimation(self.grid("71-76", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            e = anim8.newAnimation(self.grid("77-82", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            ne = anim8.newAnimation(self.grid("83-88", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            n = anim8.newAnimation(self.grid("89-94", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            nw = anim8.newAnimation(self.grid("95-100", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            w = anim8.newAnimation(self.grid("101-106", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+            sw = anim8.newAnimation(self.grid("107-112", 1),
+                { self.animationSpeed * 1.25, self.animationSpeed, self.animationSpeed * 1.5, self.animationSpeed, self
+                .animationSpeed * 2, self.animationSpeed * 1.25 }),
+        },
+        idle = {
+            s = anim8.newAnimation(self.grid(1, 1, 3, 1), self.animationSpeed * 2),
+            se = anim8.newAnimation(self.grid(5, 1, 7, 1), self.animationSpeed * 2),
+            e = anim8.newAnimation(self.grid(9, 1, 11, 1), self.animationSpeed * 2),
+            ne = anim8.newAnimation(self.grid(13, 1, 15, 1), self.animationSpeed * 2),
+            n = anim8.newAnimation(self.grid(17, 1, 19, 1), self.animationSpeed * 2),
+            nw = anim8.newAnimation(self.grid(21, 1, 23, 1), self.animationSpeed * 2),
+            w = anim8.newAnimation(self.grid(25, 1, 27, 1), self.animationSpeed * 2),
+            sw = anim8.newAnimation(self.grid(29, 1, 31, 1), self.animationSpeed * 2)
+        }
     }
-    --self.animations.idle = anim8.newAnimation(self.grid("3-4", 1), self.animationSpeed * 4)
-    self.animation = self.animations.s
+    self.animation = self.animations.idle.s
 
     self.actionManager = ActionManager:new(self)
 end
@@ -72,13 +137,13 @@ function Player:update(dt)
     self.x = self.body:getX()
     self.y = self.body:getY()
 
-    Animation.update(self, dt)
-
     self.actionManager:update(dt)
+
+    Animation.update(self, dt)
 end
 
 function Player:draw() --draw function
-    self.animation:draw(self.spritesheet, self.x, self.y, nil, self.scale, self.scale, self.sWidth, self.sHeight * 1.55)
+    self.animation:draw(self.spritesheet, self.x, self.y, 0, self.scale, self.scale, self.sWidth, self.sHeight * 1.55)
 end
 
 function Player:playerMovement()
@@ -105,8 +170,8 @@ function Player:checkBoundaries()
 end
 
 function Player:takeDmg(dmg)
-    if Player.immunityCooldown == 0 then
-        Player.health = Player.health - dmg
-        Player.immunityCooldown = Player.IMMUNITY
+    if self.immunityCooldown == 0 then
+        self.health = self.health - dmg
+        self.immunityCooldown = self.IMMUNITY
     end
 end

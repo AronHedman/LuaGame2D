@@ -79,7 +79,9 @@ function Movement.update(owner, dt)
         local dx2, dy2 = owner.body:getLinearVelocity()
         if math.abs(dx2) < 0.2 and math.abs(dy2) < 0.2 then
             owner.body:setLinearVelocity(0, 0)
-            owner.state = "idle"
+            if owner.state == "moving" or not owner.doesAction then
+                owner.state = "idle"
+            end
         end
     end
 end

@@ -13,6 +13,8 @@ function Testmob:new(x, y)
     obj.speed = 100
 
     obj.isMoving = false
+    obj.isAttacking = false
+    obj.facing = "down"
     obj.moveTargetX = nil
     obj.moveTargetY = nil
 
@@ -44,13 +46,33 @@ function Testmob:new(x, y)
     )
 
     obj.animations = {
-        down  = anim8.newAnimation(obj.grid("1-4", 1), 0.2),
-        left  = anim8.newAnimation(obj.grid("1-4", 2), 0.2),
-        right = anim8.newAnimation(obj.grid("1-4", 3), 0.2),
-        up    = anim8.newAnimation(obj.grid("1-4", 4), 0.2)
+        walking = {
+            down  = anim8.newAnimation(obj.grid("1-4", 1), 0.2),
+            left  = anim8.newAnimation(obj.grid("1-4", 2), 0.2),
+            right = anim8.newAnimation(obj.grid("1-4", 3), 0.2),
+            up    = anim8.newAnimation(obj.grid("1-4", 4), 0.2)
+        },
+        attack_1 = {
+            down  = anim8.newAnimation(obj.grid("1-4", 1), 0.2),
+            left  = anim8.newAnimation(obj.grid("1-4", 2), 0.2),
+            right = anim8.newAnimation(obj.grid("1-4", 3), 0.2),
+            up    = anim8.newAnimation(obj.grid("1-4", 4), 0.2)
+        },
+        attack_2 = {
+            down  = anim8.newAnimation(obj.grid("1-4", 1), 0.2),
+            left  = anim8.newAnimation(obj.grid("1-4", 2), 0.2),
+            right = anim8.newAnimation(obj.grid("1-4", 3), 0.2),
+            up    = anim8.newAnimation(obj.grid("1-4", 4), 0.2)
+        },
+        idle = {
+            down  = anim8.newAnimation(obj.grid("1-4", 1), 0.2),
+            left  = anim8.newAnimation(obj.grid("1-4", 2), 0.2),
+            right = anim8.newAnimation(obj.grid("1-4", 3), 0.2),
+            up    = anim8.newAnimation(obj.grid("1-4", 4), 0.2)
+        }
     }
 
-    obj.animation = obj.animations.down
+    obj.animation = obj.animations.walking.down
 
     obj.state = 1 -- 1, 'normal', 2, performing task (not refreshing behaviourmachine), 3, dead/schedueld for removal
     --state needs reworking, currently a mix of different systems
@@ -108,7 +130,7 @@ function Testmob:draw()
     self.animation:draw(
         self.spritesheet,
         self.x, self.y,
-        nil,
+        0,
         self.scale, self.scale,
         self.sWidth / 2,
         self.sHeight * 0.82
