@@ -30,7 +30,7 @@
 local AStar = {}
 AStar.__index = AStar
 
-local INF = 1 / 0
+local INF = 1 / 0 -- infinity
 
 -- Constructor
 function AStar.new(map)

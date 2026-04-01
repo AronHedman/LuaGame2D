@@ -30,6 +30,16 @@ Actions.playerAttack = {
     duration = 1.1,
     start = function(owner)
         owner.state = "attacking"
+
+        local mx, my = cam:mousePosition()
+        local dx, dy = calculateVecComponent(owner.x, owner.y, mx, my)
+
+        local angle = math.atan2(dy, dx)
+        local octant = math.floor((angle + math.pi / 8 + math.pi) / (math.pi / 4)) % 8 + 1
+        local directions = { "w", "nw", "n", "ne", "e", "se", "s", "sw" }
+        owner.facing = directions[octant]
+
+
         owner:raycast(math.pi / 8, 100, nil, Actions.playerAttack.duration, 32, function(hit)
             local data = hit.data
             if data and data.type == "TESTMOB" then
