@@ -8,18 +8,20 @@ function GameMenu:update()
 
 end
 
-local bx = g.getWidth() / 8
-local by = g.getHeight() / 8
-local bw = g.getWidth() / 4
-local bh = g.getHeight() / 8
-
 function GameMenu:draw()
+    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+
+    local bx = w / 8
+    local by = h / 8
+    local bw = w / 4
+    local bh = h / 8
+
     g.setColor(transparentGrey)
     g.rectangle("fill", 0, 0, g.getWidth(), g.getHeight())
 
     g.setColor(brightGrey)
     local title = g.newText(bigAssFont, "Menu")
-    g.draw(title, g.getWidth() / 2, g.getHeight() / 2, 0, scale, scale, title:getWidth() / 2, bh * 2, 0, 0)
+    g.draw(title, g.getWidth() / 2, g.getHeight() / 4, 0, scale, scale, title:getWidth() / 2, 0, 0, 0)
 
     g.setColor(transparentGrey)
 
@@ -40,14 +42,14 @@ function GameMenu:draw()
     g.setColor(brightGrey)
     local startText = g.newText(font, "Start Game")
     g.draw(
-        startText, g.getWidth() / 2, g.getHeight() / 2, 0, scale, scale, startText:getWidth() / 2,
-        startText:getHeight() / 2 + bh / 2
+        startText, g.getWidth() / 2, by * 3 + bh / 2, 0, scale, scale, startText:getWidth() / 2,
+        startText:getHeight() / 2
     )
 
-    local quitText = g.newText(font, "Exit to Menu")
+    local quitText = g.newText(font, "Exit to menu")
     g.draw(
-        quitText, g.getWidth() / 2, g.getHeight() / 2, 0, scale, scale, quitText:getWidth() / 2,
-        quitText:getHeight() / 2 + bh / 2 - by * 1.5
+        quitText, g.getWidth() / 2, by * 4.5 + bh / 2, 0, scale, scale, quitText:getWidth() / 2,
+        quitText:getHeight() / 2
     )
 end
 
