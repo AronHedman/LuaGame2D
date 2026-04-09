@@ -39,13 +39,15 @@ Actions.playerAttack = {
         local directions = { "w", "nw", "n", "ne", "e", "se", "s", "sw" }
         owner.facing = directions[octant]
 
+        local vec = vector(dx, dy):normalized() * owner.speed * 3
+        owner.body:setLinearVelocity(vec.x, vec.y)
 
-        owner:raycast(math.pi / 8, 100, nil, Actions.playerAttack.duration, 32, function(hit)
+        owner:raycast(math.pi / 8, 80, nil, Actions.playerAttack.duration / 6, 3, function(hit)
             local data = hit.data
             if data and data.type == "TESTMOB" then
                 Player.health = Player.health - 1 --Apply to player to visualise/test
             end
-        end)
+        end, Actions.playerAttack.duration / 1.5)
     end,
     finish = function(owner)
         owner.state = "idle"
@@ -77,6 +79,26 @@ Actions.lunge = {
     duration = 0.4,
     start = function(owner)
         local dir = vector(calculateVecComponent(owner.x, owner.y, owner.moveTargetX, owner.moveTargetY))
+        if dir:len() == 0 then
+            dir = vector(0, 0)
+        end
+        owner.body:setLinearDamping(5)
+        owner.body:applyLinearImpulse(dir.x * owner.speed, dir.y * owner.speed)
+        owner.cooldowns["lungeCooldown"] = 3
+        owner.state = "lunge"
+    end,
+    finish = function(owner)
+        owner.body:setLinearVelocity(0, 0)
+        owner.body:setLinearDamping(linearDamping)
+        owner.state = "idle"
+    end
+}
+
+Actions.playerLunge = {
+    duration = 0.4,
+    start = function(owner)
+        local mx, my = cam:mousePosition()
+        local dir = vector(calculateVecComponent(owner.x, owner.y, mx, my))
         if dir:len() == 0 then
             dir = vector(0, 0)
         end

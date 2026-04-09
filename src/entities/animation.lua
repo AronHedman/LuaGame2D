@@ -9,14 +9,16 @@ function Animation.update(owner, dt)
 
             if owner.animations["attack" .. append][owner.facing] then
                 owner.animation = owner.animations["attack" .. append][owner.facing]
+                owner.animation:gotoFrame(1)
+                owner.animation:resume()
             end
             owner.isAttacking = true
         end
-    elseif owner.state == "moving" then
-        owner.isAttacking = false
-        owner.animation = owner.animations.walking[owner.facing]
     elseif owner.state == "idle" then
         owner.animation = owner.animations.idle[owner.facing]
+    else
+        owner.isAttacking = false
+        owner.animation = owner.animations.walking[owner.facing]
     end
 
     if owner.animation then

@@ -52,6 +52,11 @@ function love.keypressed(key)
     if key == "r" then
         math.randomseed(love.timer.getTime())
     end
+    if key == "lshift" then
+        if Player.cooldowns["lungeCooldown"] == 0 then
+            Player.actionManager:addAction(Actions.playerLunge)
+        end
+    end
 end
 
 --Mouse input
