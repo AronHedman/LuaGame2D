@@ -22,11 +22,6 @@ function load()
         type = "chest"
     }
     inventories["temp"] = tempInventory
-
-    inventory.slots[1] = Item:new(iron_axe)
-    inventory.slots[17] = Item:new(iron_axe)
-
-    tempInventory.slots[3] = Item:new(iron_axe)
     ------
 
     testmob = Testmob:initTestmob(500, 500)
