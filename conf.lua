@@ -1,5 +1,5 @@
 function love.conf(t)
-    t.identity = "LuaGame2D"
+    t.identity = "LuaGame"
     t.console = true
     t.window.title = "Lua Game 2D"
     t.window.width = 1024

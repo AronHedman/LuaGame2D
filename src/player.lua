@@ -28,6 +28,11 @@ function Player:load()
     self.health = 10
     self.immunityCooldown = 0
 
+    self.cooldowns = {}
+    self.cooldowns["lungeCooldown"] = 0
+    self.cooldowns["attackCooldown"] = 0
+    self.cooldowns["immunityCooldown"] = 0
+
     -----
 
     self.body = p.newBody(world, self.x, self.y, "dynamic")
@@ -122,10 +127,11 @@ function Player:load()
 end
 
 function Player:update(dt)
-    if self.immunityCooldown > 0 then
-        self.immunityCooldown = self.immunityCooldown - dt
-        if self.immunityCooldown < 0 then
-            self.immunityCooldown = 0
+    for name, cd in pairs(self.cooldowns) do
+        if cd > 0 then
+            cd = cd - dt
+            if cd < 0 then cd = 0 end
+            self.cooldowns[name] = cd
         end
     end
 
@@ -154,8 +160,8 @@ function Player:playerMovement()
     if love.keyboard.isDown("s") then self.dirY = 1 end
 end
 
-function Player:raycast(angle, radius, dVec, duration, rayAmoun, onHit) -- Raycast wrapper for player
-    Raycast.raycast(self, angle, radius, dVec, duration, rayAmount, onHit)
+function Player:raycast(angle, radius, dVec, duration, rayAmoun, onHit, delay) -- Raycast wrapper for player to be able to write Player:raycast()
+    Raycast.raycast(self, angle, radius, dVec, duration, rayAmount, onHit, delay)
 end
 
 function Player:checkBoundaries()
@@ -170,8 +176,8 @@ function Player:checkBoundaries()
 end
 
 function Player:takeDmg(dmg)
-    if self.immunityCooldown == 0 then
+    if self.cooldowns["immunityCooldown"] == 0 then
         self.health = self.health - dmg
-        self.immunityCooldown = self.IMMUNITY
+        self.cooldowns["immunityCooldown"] = self.IMMUNITY
     end
 end

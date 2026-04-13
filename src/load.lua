@@ -1,7 +1,11 @@
 function load()
     --load stuff
     require("src.gameStart.setup")
+
     setup()
+
+    Score:load()
+
     Player:load()
 
     inventories = {}

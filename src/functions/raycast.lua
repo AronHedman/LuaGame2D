@@ -5,7 +5,7 @@ Raycast.testDuration = 100
 Raycast.defRayAmount = 64
 
 -- Constructor
-function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit)
+function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit, delay)
     if not source.body then return nil end
 
     local len = math.sqrt(dVec.x * dVec.x + dVec.y * dVec.y)
@@ -28,6 +28,7 @@ function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit)
     obj.centerAngle   = baseAngle
     obj.currentAngle  = startAngle
 
+    obj.delay         = delay
     obj.duration      = duration
     obj.elapsed       = 0
 
@@ -43,6 +44,11 @@ function Raycast:new(source, angle, radius, dVec, duration, rayAmount, onHit)
 end
 
 function Raycast:update(dt)
+    if self.delay and self.delay > 0 then
+        self.delay = self.delay - dt
+        return
+    end
+
     self.sx, self.sy = self.source.body:getPosition()
     if not self.active then return end
 
@@ -50,33 +56,36 @@ function Raycast:update(dt)
 
     -- small-angle mode (straight ray)
     if self.angle < pi / 16 then
-        self.currentAngle = self.centerAngle
+        if self.currentStep == 0 then
+            self.currentStep = 1
+            self.currentAngle = self.centerAngle
 
-        local dx, dy = math.cos(self.currentAngle), math.sin(self.currentAngle)
-        local ex, ey = self.sx + dx * self.radius, self.sy + dy * self.radius
+            local dx, dy = math.cos(self.currentAngle), math.sin(self.currentAngle)
+            local ex, ey = self.sx + dx * self.radius, self.sy + dy * self.radius
 
-        world:rayCast(self.sx, self.sy, ex, ey, function(fix, x, y, xn, yn, fraction)
-            local hit = {
-                fixture = fix,
-                data = fix:getUserData(),
-                x = x,
-                y = y,
-                rl = self.currentStep / self.totalSteps, -- relative to center ray, greater than .5 is to the right of center
-                dx = x - self.sx,
-                dy = y - self.sy,
-                nx = xn,
-                ny = yn,
-                fraction = fraction
-            }
+            world:rayCast(self.sx, self.sy, ex, ey, function(fix, x, y, xn, yn, fraction)
+                local hit = {
+                    fixture = fix,
+                    data = fix:getUserData(),
+                    x = x,
+                    y = y,
+                    rl = 0.5, -- relative to center ray, greater than .5 is to the right of center
+                    dx = x - self.sx,
+                    dy = y - self.sy,
+                    nx = xn,
+                    ny = yn,
+                    fraction = fraction
+                }
 
-            local id = fix -- or fix:getUserData() if unique
-            if not self.hitSet[id] then
-                self.hitSet[id] = true
-                table.insert(self.hits, hit)
-                if self.onHit then self.onHit(hit) end
-            end
-            return 1
-        end)
+                local id = fix -- or fix:getUserData() if unique
+                if not self.hitSet[id] then
+                    self.hitSet[id] = true
+                    table.insert(self.hits, hit)
+                    if self.onHit then self.onHit(hit) end
+                end
+                return 1
+            end)
+        end
     else
         local timePerStep = self.duration / self.totalSteps
         local targetStep = math.floor(self.elapsed / timePerStep)
@@ -124,6 +133,8 @@ end
 
 function Raycast:draw()
     -- center ray
+    if self.delay and self.delay > 0 then return end
+
     local cdx, cdy = math.cos(self.centerAngle), math.sin(self.centerAngle)
     local cex, cey = self.sx + cdx * self.radius, self.sy + cdy * self.radius
     g.setColor(0, 1, 0, 0.5)
@@ -141,18 +152,19 @@ end
 
 -----------------------------
 
-function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
-    local sx, sy = self.body:getPosition()
-    local mx, my = cam:mousePosition()
+function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit, delay)
+    local sx, sy    = self.body:getPosition()
+    local mx, my    = cam:mousePosition()
 
-    angle        = angle or pi / 4
-    radius       = radius or 100
-    duration     = duration or Raycast.testDuration
-    rayAmount    = rayAmount or Raycast.defRayAmount
-    dVec         = dVec or { x = mx - sx, y = my - sy }
+    local angle     = angle or pi / 4
+    local radius    = radius or 100
+    local duration  = duration or Raycast.testDuration
+    local rayAmount = rayAmount or Raycast.defRayAmount
+    local dVec      = dVec or { x = mx - sx, y = my - sy }
+    local delay     = delay or 0
 
     if not self.raycaster then
-        self.raycaster = Raycast:new(self, angle, radius, dVec, duration, rayAmount, onHit)
+        self.raycaster = Raycast:new(self, angle, radius, dVec, duration, rayAmount, onHit, delay)
         if self.raycaster then
             table.insert(Raycast.list, self.raycaster)
         end
@@ -163,6 +175,7 @@ function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
         local len = math.sqrt(dVec.x * dVec.x + dVec.y * dVec.y)
         if len == 0 then return end
 
+        local delay       = delay
         local nx, ny      = dVec.x / len, dVec.y / len
         local baseAngle   = math.atan2(ny, nx)
         local startAngle  = baseAngle - angle / 2
@@ -171,6 +184,7 @@ function Raycast:raycast(angle, radius, dVec, duration, rayAmount, onHit)
 
         local rc          = self.raycaster
 
+        rc.delay          = delay
         rc.angle          = angle
         rc.radius         = radius
         rc.duration       = duration

@@ -63,6 +63,8 @@ function setup()
 
     -----------------------------------------------------
 
+    Score = require("src.score")
+
     Raycast = require("src.functions.raycast")
     Pathfinder = require("src.entities.pathfinder.pathfinder")
     BehaviourMachine = require("src.entities.behaviourMachine")
