@@ -80,6 +80,7 @@ end
 
 function AStar:updateNodes()
     local layer = self.map.layers["Ground"]
+
     if not layer or layer.type ~= "tilelayer" then return end
 
     self.nodeTable = {}
@@ -122,7 +123,7 @@ end
 function AStar:heuristic_cost_estimate(nodeA, nodeB)
     local dx = math.abs(nodeA.x - nodeB.x)
     local dy = math.abs(nodeA.y - nodeB.y)
-    return 10 * (dx + dy) + (14 - 20) * math.min(dx, dy)
+    return 10 * (dx + dy) + (14 - 20) * math.min(dx, dy) --Manhattan geometry
 end
 
 -- Neighbor nodes (uses self.nodeByXY)
@@ -143,9 +144,9 @@ function AStar:neighbor_nodes(node)
     add(x, y + 1, 10)
     add(x, y - 1, 10)
 
-    -- cost 14, roughly sqrt(2)*10
 
-    -- diagonal checks to avoid cutting corners, checks if both adjacent sides are walkable
+    -- diagonal checks to avoid cutting corners, checks if both adjacent sides are walkable and adjusts price
+    -- cost 14, roughly sqrt(2)*10
     if self.nodeByXY[y] and self.nodeByXY[y][x + 1] and self.nodeByXY[y][x + 1].walkable
         and self.nodeByXY[y + 1] and self.nodeByXY[y + 1][x] and self.nodeByXY[y + 1][x].walkable then
         add(x + 1, y + 1, 14)

@@ -23,3 +23,5 @@ end
 function Score:setHighscore()
 
 end
+
+return Score
