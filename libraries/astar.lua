@@ -227,7 +227,8 @@ function AStar:a_star(start, goal)
         for _, step in ipairs(self:neighbor_nodes(current)) do
             local neighbor, cost = step.node, step.cost
             if not_in(closedset, neighbor) then
-                local tentative_g = (g_score[current] or INF) + cost
+                local tentative_g = (g_score[current] or INF) +
+                    cost -- g_score[current] is nil if current is not in openset, tentative_g is temprary g_cost storage variable
                 if not_in(openset, neighbor) or tentative_g < (g_score[neighbor] or INF) then
                     came_from[neighbor] = current
                     g_score[neighbor] = tentative_g
