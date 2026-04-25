@@ -532,3 +532,24 @@ function path(start, goal, nodes, ignore_cache, valid_node_func)
 
     return resPath
 end
+
+
+
+
+
+
+
+
+
+
+table till gyArb rapport:
+
+myTable = {
+    1 = "string",
+    2 = 2,
+    3 = true,
+    4 = {"a", b = 2, 3},
+    "five" = 5,
+    6 = [1, 2, 3],
+    "myFunction" = function,
+}
