@@ -1,27 +1,24 @@
 local Score = {}
 local score = 0
-local highscore = 0
+local timer = 0
 
 
 function Score:load()
-    if love.filesystem.getInfo("highscore.txt") then
-        local contents, size = love.filesystem.read("highscore.txt")
-        self.highscore = tonumber(contents) or 0
-    else
-        self.highscore = 0
-    end
+
 end
 
 function Score:update(dt)
-
+    timer = timer + dt
+    if timer > 1 then
+        score = score + 1
+        timer = timer - 1
+    end
 end
 
-function Score:getHighscore()
+function Score:draw()
+    local scoreString = "Score: " .. score
 
-end
-
-function Score:setHighscore()
-
+    g.print(scoreString, 10, 10)
 end
 
 return Score

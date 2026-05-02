@@ -6,6 +6,7 @@ function createTree()
         local tree = {}
         tree.x = obj.x
         tree.y = obj.y
+        tree.type = "tree"
         tree.scale = 5
         tree.image = g.newImage("assets/Plant1.png")
         tree.sWidth, tree.sHeight = tree.image:getDimensions()

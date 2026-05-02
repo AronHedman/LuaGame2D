@@ -5,6 +5,8 @@ function drawUI()
 
     drawHUD()
 
+    Score:draw()
+
     inventory:drawHotbar()
 
     if gamestate == 2 then
@@ -18,19 +20,10 @@ function drawUI()
             inv:draw()
         end
     end
-
-    if gamestate == 0 then
-        drawMenu()
-    end
 end
 
 function drawHUD()
     drawHP()
-end
-
-function drawMenu()
-    g.setColor(1, 1, 1, 1)
-    g.print("Menu", 40 * scale, 60 * scale)
 end
 
 function drawHP()

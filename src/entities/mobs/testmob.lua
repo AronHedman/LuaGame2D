@@ -136,7 +136,6 @@ function Testmob:draw()
         self.sHeight * 0.82
     )
 
-    --temp
     g.setColor(1, 1, 1, 1)
 end
 

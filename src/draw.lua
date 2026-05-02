@@ -19,6 +19,7 @@ function draw()
     tempDraw()
 
     drawDebugPre()
+    Pathfinder.drawPathfinders()
 
     --drawUI()
     cam:detach() --Detach the camera from the screen
@@ -34,11 +35,13 @@ end
 
 function drawShadows()
     for i, obj in ipairs(drawables) do
-        local width = obj.sWidth * obj.scale / 3
-        local height = width / 3
+        if obj.type ~= "tree" then
+            local width = obj.sWidth * obj.scale / 3
+            local height = width / 3
 
-        g.setColor(0, 0, 0, 0.35)
-        g.ellipse("fill", obj.x, obj.y + obj.sHeight / 2.2, width, height)
-        g.setColor(1, 1, 1, 1)
+            g.setColor(0, 0, 0, 0.35)
+            g.ellipse("fill", obj.x, obj.y + obj.sHeight / 2.2, width, height)
+            g.setColor(1, 1, 1, 1)
+        end
     end
 end

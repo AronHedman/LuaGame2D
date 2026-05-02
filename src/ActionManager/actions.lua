@@ -3,11 +3,11 @@ local Actions = {}
 Actions.idle = {
     duration = math.random(1, 5),
     start = function(owner)
-        owner.state = "idle"
+        owner.state = "idleing"
         owner.dirX, owner.dirY = 0, 0
     end,
     finish = function(owner)
-        -- nothing to do
+        owner.state = "idle"
     end
 }
 

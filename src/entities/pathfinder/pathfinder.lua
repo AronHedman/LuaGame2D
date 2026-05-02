@@ -81,17 +81,12 @@ function Pathfinder:progressPath()
 end
 
 function Pathfinder:hasLOS()
-    if not self.repathCooldown <= 0 then return end
+    if self.repathCooldown > 0 then return end
 end
 
 function Pathfinder:repath()
     self.path = nil
     self.owner.isMoving = false
-    if self.owner.activity == "targeting" then
-        self:pathfindTarget()
-    else
-        self:roam()
-    end
 end
 
 function Pathfinder:roam()
@@ -106,10 +101,61 @@ function Pathfinder:roam()
 
         if self.start and tile then
             self.path = AStar:path(self.start, tile)
-            self.targetX, self.targetY = self.path[1].x, self.path[1].y
+            if self.path ~= nil and #self.path > 0 then
+                self.targetX, self.targetY = self.path[1].x, self.path[1].y
+            else
+                self.path = nil
+                self.owner.isMoving = false
+            end
+        end
+        self.repathCooldown = 2 --seconds
+    end
+end
+
+function Pathfinder:flee()
+    if self.owner.activity == "fleeing" and self.path == nil and self.repathCooldown <= 0 then
+        local startTileX, startTileY = pixelToTile(self.x, self.y)
+        self.start = AStar:coordToNodeByXY(startTileX, startTileY)
+
+        local dx = self.x - Player.x
+        local dy = self.y - Player.y
+        local currentDistPixels = math.sqrt(dx * dx + dy * dy)
+
+        local radius = math.max(1, math.floor(currentDistPixels))
+        local minSafeDistancePixels = currentDistPixels * 1.4
+
+        local tile = nil
+        local attempts = 0
+        local maxAttempts = 50
+
+        while (tile == nil or not tile.walkable) and attempts < maxAttempts do
+            local roamX = math.random(-radius, radius)
+            local roamY = math.random(-radius, radius)
+            local potentialPixelX = self.x + roamX
+            local potentialPixelY = self.y + roamY
+
+            local pTileX, pTileY = pixelToTile(potentialPixelX, potentialPixelY)
+            tile = AStar:coordToNodeByXY(pTileX, pTileY)
+
+            if tile and tile.walkable then
+                local distToPlayer = math.sqrt((potentialPixelX - Player.x) ^ 2 + (potentialPixelY - Player.y) ^ 2)
+
+                if distToPlayer < minSafeDistancePixels then
+                    tile = nil --too close try again
+                end
+            end
+
+            attempts = attempts + 1
         end
 
-        self.repathCooldown = 2 --seconds
+        if self.start and tile then
+            self.path = AStar:path(self.start, tile)
+            if self.path and #self.path > 0 then
+                self.targetX, self.targetY = self.path[1].x, self.path[1].y
+            end
+        end
+
+        self.repathCooldown = 2
     end
 end
 
@@ -123,19 +169,53 @@ function Pathfinder:pathfindTarget()
 
         local tx, ty = pixelToTile(self.targetEnt.x, self.targetEnt.y)
         self.target = AStar:coordToNodeByXY(tx, ty)
+
         if self.start and self.target ~= nil and self.start ~= self.target and not (distance(self.start.x, self.start.y, self.target.x, self.target.y) <= 0.5) then
             self.path = AStar:path(self.start, self.target)
-            self.targetX, self.targetY = self.path[1].x, self.path[1].y
+
+            if self.path ~= nil and #self.path > 0 then
+                self.targetX, self.targetY = self.path[1].x, self.path[1].y
+            else
+                self.path = nil
+                self.owner.isMoving = false
+            end
         end
-        self.repathCooldown = 0.5 --seconds
+        self.repathCooldown = 0.5
     end
 end
 
-------------------------
-
--- Draw (debug only)
 function Pathfinder:draw()
-    -- Add visualisation / debug
+    if not debugMode or self.path == nil or #self.path == 0 then
+        return
+    end
+
+    love.graphics.setLineWidth(4)
+
+    local currentPX, currentPY = self.px, self.py
+
+    if self.owner.behaviour == "aggressive" then
+        love.graphics.setColor(0.8, 0.2, 0.2, 1)
+    elseif self.owner.behaviour == "skittish" then
+        love.graphics.setColor(0.8, 0.8, 0, 1)
+    else
+        love.graphics.setColor(0.6, 1, 0.3, 1)
+    end
+
+    for i = 1, #self.path do
+        local nextPX, nextPY = tileToPixel(self.path[i].x, self.path[i].y)
+        love.graphics.line(currentPX, currentPY, nextPX, nextPY)
+
+        currentPX, currentPY = nextPX, nextPY
+    end
+
+    local endNode = self.path[#self.path]
+    local endPX, endPY = tileToPixel(endNode.x, endNode.y)
+
+    love.graphics.setColor(1, 0, 0, 1)
+    love.graphics.circle("fill", endPX, endPY, 8 * scale)
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setLineWidth(1)
 end
 
 function Pathfinder.drawPathfinders()

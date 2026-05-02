@@ -24,6 +24,7 @@ function drawDebugPre()
     end
 
     Raycast.drawRaycasters()
+    Pathfinder.drawPathfinders()
 
     -- Draw debug points (your existing list)
     for i, obj in ipairs(drawables) do

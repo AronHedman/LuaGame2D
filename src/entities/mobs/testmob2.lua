@@ -86,6 +86,14 @@ function Testmob2:new(x, y)
     obj.pathfinder = Pathfinder:new(obj)
     obj.actionManager = ActionManager:new(obj)
 
+    -- Attack / Movement related
+    obj.health = 10
+    obj.attack = 1
+
+    obj.cooldowns = {}
+    obj.cooldowns["lungeCooldown"] = 0
+    obj.cooldowns["attackCooldown"] = 0
+
     return obj
 end
 
@@ -93,6 +101,14 @@ function Testmob2:update(dt)
     -- sync physics → logical position
     self.x = self.body:getX()
     self.y = self.body:getY()
+
+    for name, cd in pairs(self.cooldowns) do
+        if cd > 0 then
+            cd = cd - dt
+            if cd < 0 then cd = 0 end
+            self.cooldowns[name] = cd
+        end
+    end
 
     -- run 'AI'
     self.behaviourMachine:update(dt)
@@ -121,13 +137,13 @@ function Testmob2:draw()
         self.sHeight * 0.82
     )
 
-    --temp
     g.setColor(1, 1, 1, 1)
 end
 
--- Entry point for Testmob
-function Testmob2:initTestmob(x, y)
+-- Entry point for Testmob2
+function Testmob2:initTestmob(x, y, behaviour)
     local mob = Testmob2:new(x, y)
+    mob.behaviour = behaviour or "neutral"
 
     table.insert(Testmob2.list, mob)
     return mob
