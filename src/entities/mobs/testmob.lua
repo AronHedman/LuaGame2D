@@ -122,9 +122,14 @@ function Testmob:update(dt)
 end
 
 function Testmob:draw()
-    --temp
-    if self.activity == "targeting" then
-        g.setColor(1, 0.3, 0.3, 1)
+    if debugMode then
+        if self.state == "idleing" then
+            g.setColor(0.5, 0.5, 1, 1)
+        elseif self.activity == "targeting" then
+            g.setColor(1, 0.3, 0.3, 1)
+        elseif self.activity == "wandering" then
+            g.setColor(1, 1, 0.3, 1)
+        end
     end
 
     self.animation:draw(

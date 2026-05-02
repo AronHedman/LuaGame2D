@@ -20,12 +20,12 @@ Behaviours.neutral = {
 
 Behaviours.aggressive = {
     update = function(self, owner, dt)
-        if distance(owner.x, owner.y, Player.x, Player.y) < 5 * map1.tilewidth then
+        if distance(owner.x, owner.y, Player.x, Player.y) < 4 * map1.tilewidth then
             owner.activity = "targeting"
             owner.pathfinder.targetEnt = Player
         end
         if owner.activity == "targeting" then
-            if distance(owner.x, owner.y, Player.x, Player.y) > 5 * map1.tilewidth then
+            if distance(owner.x, owner.y, Player.x, Player.y) > 4 * map1.tilewidth then
                 owner.activity = "wandering"
                 owner.pathfinder.path = nil
             end
